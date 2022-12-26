@@ -1,0 +1,19 @@
+---
+layout: default          # 페이지의 화면에 나타나는 layout 지정
+title: Test12            # title 지정 (파일명: test.html -> Test12.html로 인식됨)
+nav_order: 3             # navigation order 지정
+# parent: Just the docs  # navigation 관련 - parent      경로지정
+# grand_parent: Jekyll   # navigation 관련 - grandparent 경로지정
+my_number: 125           # 사용자 정의 변수
+---
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>{{ page.title }}</title>
+  </head>
+  <body>
+    <h1>{{ "Hello World!" | downcase }}</h1>
+    <h3>{{ page.my_number }}</h3>
+  </body>
+</html>
