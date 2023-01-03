@@ -1,9 +1,9 @@
 ---
 layout: default
-title: OOP
-nav_order: 3
+title: MyProject
+nav_order: 4
 parent: Python
 has_children: true
 ---
 
-# OOP
+# MyProject
