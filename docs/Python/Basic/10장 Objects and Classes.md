@@ -639,6 +639,7 @@ a `getter` (get_name()) and a `setter` (set_name()). Each is accessed by a prope
 ...         print ('inside the setter')
 ...         self.hidden_name = input_name
 ```
+
 ```python
 >>> don = Duck('Donald')
 >>> don.get_name()
@@ -650,6 +651,7 @@ inside the setter
 inside the getter
 'Donna'
 ```
+
 ### Properties for Attribute Access
 
 The Pythonic solution for attribute privacy is to use properties.
@@ -668,6 +670,7 @@ There are two ways to do this. The first way is to add `name = property(get_name
 >>>         self.hidden_name = input_name
 >>>     name = property(get_name, set_name)
 ```
+
 The old getter and setter still work:
 
 ```python
@@ -681,6 +684,7 @@ inside the setter
 inside the getter
 'Donna'
 ```
+
 But now you can also use the property name to get and set the hidden name:
 
 ```python
@@ -694,6 +698,7 @@ inside the setter
 inside the getter
 'Donna'
 ```
+
 In the second method, you add some decorators and replace the method names get_name and set_name with name:
 
 - `@property`, which goes before the getter method
@@ -905,6 +910,7 @@ breezy_a = A()
 wheezy_a = A()
 A.kids() # A has 3 little objects.
 ```
+
 Notice that we referred to `A.count` (the class attribute) in `__init__()` rather than `self.count` (which would be an object instance attribute). In the kids() method, we used `cls.count`, but we could just as well have used `A.count`.
 
 ### Static Methods
@@ -987,6 +993,7 @@ And here they are in action:
 ...
 >>>
 ```
+
 We didn’t change how QuestionQuote or ExclamationQuote were initialized, so we didn’t override their `__init__()` methods. Python then automatically calls the `__init__()` method of the parent class Quote to store the instance variables person
 
 and words. That’s why we can access self.words in objects created from the subclasses QuestionQuote and ExclamationQuote.
@@ -1110,12 +1117,14 @@ When strings 'ha' and 'HA' are compared to lowercase, they should be equal:
 >>> first.equals(second)
 True
 ```
+
 But the string 'eh' will not match 'ha':
 
 ```python
 >>> first.equals(third)
 False
 ```
+
 We defined the method equals() to do this lowercase conversion and comparison. It would be nice to just say if first == second, just like Python’s built-in types. So, let’s do that. We change the equals() method to the special name `__eq__()` (you’ll see why in a moment):
 
 ```python
@@ -1126,6 +1135,7 @@ We defined the method equals() to do this lowercase conversion and comparison. I
 ...         return self.text.lower() == word2.text.lower()
 ...
 ```
+
 Let’s see whether it works:
 
 ```python
@@ -1288,6 +1298,7 @@ What’s the difference? In composition, one thing is part of another. A duck is
 >>> duck.about()
 This duck has a wide orange bill and a long tail
 ```
+
 Aggregation expresses relationships, but is a little looser: one thing uses another, but both exist independently. A duck uses a lake, but one is not a part of the other.
 
 ## When to Use Objects or Something Else
@@ -1340,6 +1351,7 @@ Duck(bill='wide orange', tail='long')
 >>> duck.tail
 'long'
 ```
+
 You can also make a named tuple from a dictionary:
 
 ```python
@@ -1411,6 +1423,7 @@ Here’s a plain old object with a single name attribute:
 >>> teeny.name
 'itsy'
 ```
+
 Doing the same with a dataclass looks a little different:
 
 ```python
@@ -1423,6 +1436,7 @@ Doing the same with a dataclass looks a little different:
 >>> teeny.name
 'bitsy'
 ```
+
 Besides needing a @dataclass decorator, you define the class’s attributes using [variable annotations](https://oreil.ly/NyGfE) of the form `_name_ : _type_` or `_name_ : _type_ = _val_` , like color: str or color: str = "red". The `_type_` can be any Python object type, including classes you’ve created, not just the built-in ones like str or int.
 
 When you’re creating the dataclass object, you provide the arguments in the order in which they were specified in the class, or use named arguments in any order:
@@ -1435,6 +1449,7 @@ When you’re creating the dataclass object, you provide the arguments in the or
 ...     habitat: str
 ...     teeth: int = 0
 ```
+
 ```python
 >>> snowman = AnimalClass('yeti', 'Himalayas', 46)
 >>> duck = AnimalClass(habitat='lake', name='duck')
@@ -1443,6 +1458,7 @@ AnimalClass(name='yeti', habitat='Himalayas', teeth=46)
 >>> duck
 AnimalClass(name='duck', habitat='lake', teeth=0)
 ```
+
 AnimalClass defined a default value for its teeth attribute, so we didn’t need to provide it when making a duck.
 
 You can refer to the object attributes like any other object’s:
@@ -1579,9 +1595,11 @@ def aminal(obj):
 
 print(aminal(Bear()))
 ```
+
 10.10 Define these classes: Laser, Claw, and SmartPhone. Each has only one method: does(). This returns 'disintegrate' (Laser), 'crush' (Claw), or 'ring' (Smart Phone). Then, define the class Robot that has one instance (object) of each of these.
 
 Define a does() method for the Robot that prints what its component objects do.
+
 ```python
 class Laser:
     def does(self):

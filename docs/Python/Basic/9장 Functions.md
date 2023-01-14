@@ -1029,6 +1029,7 @@ File "<stdin>", line 2, in dive
 [Previous line repeated 996 more times]
 RecursionError: maximum recursion depth exceeded
 ```
+
 Recursion is useful when you’re dealing with “uneven” data, like lists of lists of lists.
 
 Suppose that you want to “flatten” all sublists of a list, no matter how deeply nested.
@@ -1102,6 +1103,7 @@ The main difference between asynchronous and normal functions is that async ones
 [Exception 계층구조](https://docs.python.org/3/library/exceptions.html#exception-hierarchy)
 
 기본 구문
+
 ```python
 try:
     실행할 코드
@@ -1188,6 +1190,7 @@ while True:
     except Exception as other:
         print ('Something else broke:', other)
 ```
+
 ```python
 Position [q to quit]? 1
 2
@@ -1276,6 +1279,7 @@ three_multiple()
 #### 예외 발생 시키기
 
 - raise Exception('에러메시지')
+
 ```python
 try:
     x = int(input('3의 배수를 입력하세요: '))
@@ -1368,6 +1372,7 @@ for i in get_odds():
     n+=1
 ```
 9.3 Define a decorator called test that prints 'start' when a function is called, and 'end' when it finishes.  
+
 ```
 def test(func):
     def new_func(*args, **kwargs):
@@ -1383,7 +1388,9 @@ def greeting():
 
 greeting()
 ``` 
+
 9.4 Define an exception called OopsException. Raise this exception to see what happens. Then, write the code to catch this exception and print 'Caught an oops'.
+
 ```
 class OopsException(Exception):
     pass
@@ -1407,6 +1414,7 @@ except OopsException :
 ## 다른 언어에 있는 switch 문법은 사용할 수 없나요?
 
 파이썬은 switch 문법이 없습니다. 하지만 딕셔너리와 람다 표현식을 사용하면 switch처럼 사용할 수는 있습니다.
+
 ```python
 switch = {
     '+': lambda x, y: x + y,    # 람다 표현식으로 실행할 코드를 작성

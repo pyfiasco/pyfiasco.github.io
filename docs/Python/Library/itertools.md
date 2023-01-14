@@ -18,6 +18,7 @@ grand_parent: Python
 
 
 ## Iterate over Code Structures with itertools
+
 ```python
 import itertools
 it1 = itertools.chain([1, 2], ['a', 'b'])
@@ -67,6 +68,7 @@ print(it.__next__()) # StopIteration 예외를 발생
 ![Alt text](/assets/images/%ED%99%94%EB%A9%B4%20%EC%BA%A1%EC%B2%98%202023-01-14%20101856.png)
 
 ## 이터레이터 만들기
+
 이제 `__iter__`, `__next__` 메서드를 구현해서 직접 이터레이터를 만들어보겠습니다.    
 간단하게 range(횟수)처럼 동작하는 이터레이터입니다.
 
@@ -79,6 +81,7 @@ class 이터레이터이름:
     def __next__(self):
         코드
 ```
+
 ```python
 class Counter:
 
@@ -100,20 +103,24 @@ class Counter:
 for i in Counter(3):
     print(i, end=' ')    # 0 1 2
 ```
+
 - map객체도 iterator다.
 
 ```python
 a, _, c = map(str,Counter(3))
 print(a,c)
 ```
+
 ## 인덱스로 접근할 수 있는 이터레이터 만들기
 `__getitem__` 메서드를 구현하여 `인덱스로 접근할 수 있는 이터레이터`를 만들어보겠습니다.
+
 
 ```python
 class 이터레이터이름:
     def __getitem__(self, 인덱스):
         코드
 ```
+
 ```python
     def __getitem__(self, index):
         if index < self.stop:
@@ -125,11 +132,13 @@ class 이터레이터이름:
 for i in Counter(3):
     print(Counter(3)[i], end=' ') # 0 1 2
 ```
+
 {: .note}
 > `__init__` 메서드와 `__getitem__` 메서드만 있어도 iterator 생성 가능(초기화 불필요시 `__getitem__`메서드만으로도 구현 가능)    
 즉 `__getitem__`만 구현해도 이터레이터가 되며 `__iter__`, `__next__`는 생략해도 됩니다.
 
 ## list에 __next__메서를 추가하여 iterator 구현
+
 ```python
 class Counter(list):
 
@@ -240,6 +249,7 @@ print('\n', TimeIterator(start, stop)[index], sep='')
 함수 안에서 yield를 사용하면 함수는 제너레이터가 되며 yield에는 값(변수)을 지정합니다.
 
 - yield 값
+
 ```python
 def number_generator():
     yield 0
@@ -255,6 +265,7 @@ print(dir(g))   # __iter__, __next__ 존재
 ```
 
 next 구현
+
 ```python
 g = number_generator()
 while True:
@@ -272,6 +283,7 @@ while True:
 제너레이터는 함수 끝까지 도달하면 StopIteration 예외가 발생합니다. 마찬가지로 return도 함수를 끝내므로 return을 사용해서 함수 중간에 빠져나오면 StopIteration 예외가 발생합니다.
 >
 > 특히 제너레이터 안에서 return에 반환값을 지정하면 StopIteration 예외의 에러 메시지로 들어갑니다.
+
 ```python
 def one_generator():
     yield 1
@@ -284,7 +296,9 @@ try:
 except StopIteration as e:
     print(e)    # return에 지정한 값
 ```
+
 ### generator 만들기
+
 ```python
 def number_generator(stop):
     n = 0              # 숫자는 0부터 시작
@@ -296,6 +310,7 @@ for i in number_generator(3):
     print(i)
 
 ```
+
 ```python
 def upper_generator(x):
     for i in x:
@@ -309,6 +324,7 @@ for i in upper_generator(fruits):
 ### yield from으로 값을 여러 번 바깥으로 전달하기
 
 - for문을 이용한 생성 전달
+
 ```python
 def number_generator():
     x = [1, 2, 3]
@@ -319,8 +335,9 @@ for i in number_generator():
     print(i)
 ```
 
-- yield from 이용하여 생성 전달    
+- yield from 이용하여 생성 전달       
     : yield from 반복가능한객체(이터레이터,제너레이터객체)
+
 ```python
 def number_generator():
     x = [1, 2, 3]
@@ -343,6 +360,7 @@ def three_generator():
 for i in three_generator():
     print(i)
 ```
+
 ```python
 def file_read():
     with open('words.txt','r') as f:
@@ -357,6 +375,7 @@ for i in file_read():
 ```
 
 소수 제너레이터
+
 ```python
 def prime_number(start,stop):
     L = []
@@ -388,12 +407,14 @@ for i in g:
 리스트 표현식을 사용할 때 [ ](대괄호)를 사용했습니다. 같은 리스트 표현식을 ( )(괄호)로 묶으면 제너레이터 표현식이 됩니다. 리스트 표현식은 처음부터 리스트의 요소를 만들어내지만 제너레이터 표현식은 필요할 때 요소를 만들어내므로 메모리를 절약할 수 있습니다.
 >
 > - (식 for 변수 in 반복가능한객체)
+
 ```python
 >>> [i for i in range(50) if i % 2 == 0]
 [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48]
 >>> (i for i in range(50) if i % 2 == 0)
 <generator object <genexpr> at 0x024F02A0>
 ```
+
 
 
 
