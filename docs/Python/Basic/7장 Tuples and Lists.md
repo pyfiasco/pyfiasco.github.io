@@ -16,6 +16,7 @@ nav_order: 7
 {:toc}
 
 ---
+![Alt text](/assets/images/%ED%99%94%EB%A9%B4%20%EC%BA%A1%EC%B2%98%202023-01-09%20154324.png)
 
 In the previous chapters, we started with some of Python’s basic data types: booleans,
 
@@ -1167,8 +1168,7 @@ loop. To show that the first number is an expression, try this variant:
 A list comprehension can include a conditional expression, looking something like this:
 
 ```python
-[ expression for item
-in iterable if condition ]
+[ expression for item in iterable if condition ]
 ```
 Let’s make a new comprehension that builds a list of only the odd numbers between 1 and 5 (remember that number % 2 is True for odd numbers and False for even numbers):
 
@@ -1184,8 +1184,8 @@ Now, the comprehension is a little more compact than its traditional counterpart
 ```python
 >>> a_list = []
 >>> for number in range(1,6):
-... if number % 2 == 1:
-... a_list.append(number)
+...     if number % 2 == 1:
+...         a_list.append(number)
 ...
 >>> a_list
 [1, 3, 5]
@@ -1196,8 +1196,8 @@ Finally, just as there can be nested loops, there can be more than one set of fo
 >>> rows = range(1,4)
 >>> cols = range(1,3)
 >>> for row in rows:
-... for col in cols:
-... print (row, col)
+...     for col in cols:
+...         print (row, col)
 ...
 1 1
 1 2
@@ -1212,7 +1212,7 @@ Finally, just as there can be nested loops, there can be more than one set of fo
 >>> cols = range(1,3)
 >>> cells = [(row, col) for row in rows for col in cols]
 >>> for cell in cells:
-... print (*cell)
+...     print (*cell)
 ...
 
 ```
@@ -1402,3 +1402,218 @@ for k in rhymes:
 
 ```
 
+## list 요약
+
+### 리스트에 요소 추가하기
+- append: 요소 하나를 추가
+- extend(list): 리스트를 연결하여 확장
+- insert(인덱스, 요소): 특정 인덱스에 요소 추가
+```python
+a = [10, 20, 30]
+a.append(500)
+print(a) # [10, 20, 30, 500]
+
+a.append([500, 600])
+print(a) # [10, 20, 30, 500, [500, 600]]
+
+a = [10, 20, 30]
+a.extend([500, 600])
+print(a) # [10, 20, 30, 500, 600]
+
+a = [10, 20, 30]
+a.insert(2, 500)
+print(a) # [10, 20, 500, 30]
+
+a = [10, 20, 30]
+a.insert(1, [500, 600])
+print(a) # [10, [500, 600], 20, 30]
+
+a = [10, 20, 30]
+a[1:2] = [500, 600]
+print(a) # [10, 500, 600]
+```
+
+### 리스트에서 요소 삭제하기
+- pop(), pop(index): 마지막 요소 또는 특정 인덱스의 요소를 삭제
+- remove(값): 특정 값을 찾아서 삭제
+
+```python
+a = [10, 20, 30]
+a.pop()
+print(a) # [10, 20]
+
+a.pop(1)
+print(a) # [10]
+
+del a[0]
+print(a) # []
+
+a = [10, 20, 30,20]
+a.remove(20)
+print(a) # [10, 30, 20]  - 앞의 20만 제거
+```
+### 리스트에서 특정 값의 인덱스 구하기
+index(값)은 리스트에서 특정 값의 인덱스를 구합니다. 처음 찾은 인덱스를 구합니다(가장 작은 인덱스). 
+
+```python
+a = [10, 20, 30, 15, 20, 40]
+result = a.index(20)
+print(result) # 1
+```
+### 특정 값의 개수 구하기
+count(값)은 리스트에서 특정 값의 개수를 구합니다. 
+
+```python
+a = [10, 20, 30, 15, 20, 40]
+result = a.count(20)
+print(result) # 2
+```
+### 리스트의 순서를 뒤집기
+reverse()는 리스트에서 요소의 순서를 반대로 뒤집습니다. 
+```python
+a = [10, 20, 30, 15, 20, 40]
+a.reverse()
+print(a) # [40, 20, 15, 30, 20, 10]
+```
+### 리스트의 요소를 정렬하기
+sort()는 리스트의 요소을 작은 순서대로 정렬합니다(오름차순) = sort(reverse=False)
+```python
+a = [10, 20, 30, 15, 20, 40]
+a.sort()
+print(a) # [10, 15, 20, 20, 30, 40]
+```
+#### [참고] sort,reverse 메서드와 sorted, reversed 함수 차이
+메서드는 리스트 자체 변경, _ed함수는 결과만 반환 
+
+### 리스트의 모든 요소를 삭제하기
+clear()는 리스트의 모든 요소를 삭제합니다. = del a[:]
+```python
+a = [10, 20, 30]
+a.clear()
+print(a) # [ ]
+```
+
+### max, min, sum 구하기
+리스트, 튜플에 적용
+
+
+### 리스트를 슬라이스로 조작하기
+리스트 끝에 리스트를 추가
+```python
+a = [10, 20, 30]
+a[len(a):] = [500]
+print(a) # [10, 20, 30, 500]
+```
+
+리스트가 비어 있는지 확인하기
+len 함수 이용 / 자체 / [-1] 이용
+```python
+if not len(seq):    # 리스트가 비어 있으면 True
+if seq:             # 리스트에 내용이 있으면 True
+seq[-1]             # 값 반환시 데이터 존재
+```
+
+### list comprehension
+
+```python
+- [식 for 변수 in 리스트]
+- list(식 for 변수 in 리스트)
+- [식 for 변수1 in 리스트1 if 조건식1     for 변수2 in 리스트2 if 조건식2     
+...     for 변수n in 리스트n if 조건식n] 
+- list(식 for 변수1 in 리스트1 if 조건식1         for 변수2 in 리스트2 if 조건식2         
+...         for 변수n in 리스트n if 조건식n)
+
+- [(참일때 반환값) if 조건식 else (거짓일때 반환값) for 변수 in 리스트 if 조건식 ] 
+L = [22, 13, 45, 50, 98, 69, 43, 44, 1]
+result = [True if x >= 50 else False for x in L]
+print(result) # [False, False, False, True, True, True, False, False, False]
+
+
+a = '97.xlsx 98.docx 99.docx 100.xlsx 101.docx 102.docx'
+L = a.split()
+
+result = [('0' * (3 - len(i.split('.')[0])) + i) if
+          (len(i.split('.')[0]) < 3) else i for i in L]
+print(result)
+# ['097.xlsx', '098.docx', '099.docx', '100.xlsx', '101.docx', '102.docx']
+
+
+```
+
+### map 함수
+
+```python
+a = list(map(str, range(10)))
+print(a) # ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+
+a = list(map(int, input().split()))
+print(a) # [10, 20] 
+```
+
+### 튜플에서 특정 값의 인덱스 구하기
+index(값)은 튜플에서 특정 값의 인덱스를 구합니다. 
+
+```python
+a = (38, 21, 53, 62, 19, 53)
+result = a.index(53)
+print(result) # 2
+```
+
+### 특정 값의 개수 구하기
+```python
+count(값)은 튜플에서 특정 값의 개수를 구합니다. 
+a = (10, 20, 30, 15, 20, 40)
+resut = a.count(20)
+print(result) # 2
+```
+
+### 튜플 표현식 사용하기
+
+튜플을 리스트 표현식처럼 생성할 때는 다음과 같이 tuple 안에 for 반복문과 if 조건문을 지정합니다.
+
+- tuple(식 for 변수 in 리스트 if 조건식)
+
+[참고] ( )(괄호) 안에 표현식을 넣으면 튜플이 아니라 제너레이터 표현식이 됩니다.
+
+# for 반복문으로 리스트 만들기
+```python
+a = [[0 for j in range(2)] for i in range(3)]
+print(a) # [[0, 0], [0, 0], [0, 0]]
+
+a = [[0] * 2 for i in range(3)]
+print(a) # [[0, 0], [0, 0], [0, 0]]
+
+a = [3, 1, 3, 2, 5]    # 가로 크기를 저장한 리스트
+b = []    # 빈 리스트 생성
+ 
+
+for i in a:      # 가로 크기를 저장한 리스트로 반복
+    line = []    # 안쪽 리스트로 사용할 빈 리스트 생성
+    for j in range(i):    # 리스트 a에 저장된 가로 크기만큼 반복
+        line.append(0)
+    b.append(line)        # 리스트 b에 안쪽 리스트를 추가 
+print(b) # [[0, 0, 0], [0], [0, 0, 0], [0, 0], [0, 0, 0, 0, 0]]
+
+a = [[0] * i for i in [3, 1, 3, 2, 5]]
+print(a) # [[0, 0, 0], [0], [0, 0, 0], [0, 0], [0, 0, 0, 0, 0]]
+
+[참고] sorted로 2차원 리스트 정렬하기
+2차원 리스트를 정렬할 때는 sorted 함수를 사용합니다.
+
+sorted(반복가능한객체, key=정렬함수, reverse=True 또는 False)
+
+다음은 학생 정보가 저장된 2차원 리스트를 정렬합니다.
+
+students = [
+    ['john', 'C', 19],
+    ['maria', 'A', 25],
+    ['andrew', 'B', 7]
+]
+ 
+print(sorted(students, key=lambda student: student[1]))  # 안쪽 리스트의 인덱스 1을 기준으로 정렬
+print(sorted(students, key=lambda student: student[2]))  # 안쪽 리스트의 인덱스 2를 기준으로 정렬
+실행 결과
+[['maria', 'A', 25], ['andrew', 'B', 7], ['john', 'C', 19]]
+[['andrew', 'B', 7], ['john', 'C', 19], ['maria', 'A', 25]]
+sorted의 key에 정렬 함수를 지정하여 안쪽 리스트의 요소를 기준으로 정렬했습니다. student[1]은 안쪽 리스트의 인덱스 1을 뜻하며 'A', 'B', 'C' 순으로 정렬합니다. 마찬가지로 student[2]는 안쪽 리스트의 인덱스 2를 뜻하며 7, 19, 25 순으로 정렬합니다. 여기서는 정렬 함수를 람다 표현식으로 작성했다.
+```

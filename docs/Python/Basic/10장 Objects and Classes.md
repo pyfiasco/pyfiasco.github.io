@@ -412,6 +412,18 @@ We could have done that, but it would have defeated our use of inheritance. We u
 
 Use super() when the child is doing something its own way but still needs something from the parent (as in real life).
 
+```python
+class AdvancedList(list):
+    def replace(self,old,new):
+        for i,v in enumerate(self):
+            if v == old:
+                self[i]= new
+
+x = AdvancedList([1, 2, 3, 1, 2, 3, 1, 2, 3])
+result = x.replace(1, 100)
+print(x)  # [100, 2, 3, 100, 2, 3, 100, 2, 3]
+```
+
 ### Multiple Inheritance
 
 You’ve just seen some class examples with no parent class, and some with one.
@@ -458,7 +470,7 @@ If we look for a method or attribute of a Mule, Python will look at the followin
 
 It’s much the same for a Hinny, but with Horse before Donkey:
 
-```
+```python
 >>> Mule.mro()
 [<class '__main__.Mule'>, <class '__main__.Donkey'>,
 <class '__main__.Horse'>, <class '__main__.Animal'>,
@@ -468,6 +480,7 @@ It’s much the same for a Hinny, but with Horse before Donkey:
 <class '__main__.Donkey'>, <class '__main__.Animal'>,
 class 'object'>]
 ```
+
 So what do these fine beasts say?
 
 ```
@@ -511,6 +524,44 @@ Such a parent class is sometimes called a `mixin class`. Uses might include “s
 >>> t.dump()
 {'age': 'eldritch', 'feature': 'ichor', 'name': 'Nyarlathotep'}
 ```
+믹스인(mix-in)은 다른 클래스에서 사용할 수 있도록 공통적인 메서드를 모아 놓은 클래스를 말합니다.    
+파이썬에서 믹스인은 자체 인스턴스 속성을 가지고 있지 않으며 `__init__` 메서드를 구현하지 않습니다.    
+예를 들어 인사하는 메서드 greeting은 사람 종류의 클래스에서 공통적으로 사용하는 메서드이며 HelloMixIn에 넣었습니다.    
+Student는 HelloMixIn과 Person을 상속받고, Teacher도 HelloMixIn과 Person을 상속받았습니다.    
+따라서 Student와 Teacher는 모두 공통 메서드인 greeting을 사용할 수 있습니다.
+
+```python
+class HelloMixIn:
+    def greeting(self):               # 인사하는 메서드는 공통적인 메서드
+        print('안녕하세요.')
+ 
+class Person():
+    def __init__(self, name):
+        self.name = name
+ 
+class Student(HelloMixIn, Person):    # HelloMixIn과 Person을 상속받아 학생 클래스를 만듦
+    def study(self):
+        print('공부하기')
+ 
+class Teacher(HelloMixIn, Person):    # HelloMixIn과 Person을 상속받아 선생님 클래스를 만듦
+    def teach(self):
+        print('가르치기')
+
+```
+
+믹스인의 실제 사용 예는 파이썬 내장 모듈 socketserver를 참조하기 바랍니다.
+
+Lib/socketserver.py
+class ForkingUDPServer(ForkingMixIn, UDPServer): pass
+class ForkingTCPServer(ForkingMixIn, TCPServer): pass
+class ThreadingUDPServer(ThreadingMixIn, UDPServer): pass
+class ThreadingTCPServer(ThreadingMixIn, TCPServer): pass
+
+간단하게 설명하자면 ForkingMixIn은 포크(리눅스/유닉스에서 자식 프로세스를 생성) 방식을 구현한 믹스인이고,    
+ThreadingMixIn은 스레드 방식을 구현한 믹스인입니다.    
+즉, 이 믹스인과 UDP 프로토콜 서버인 UDPServer, TCP 프로토콜 서버인 TCPServer를 상속받아    
+ForkingUDPServer, ForkingTCPServer, ThreadingUDPServer, ThreadingTCPServer 네 종류의 클래스를 만든다는 뜻입니다.
+
 ## In self Defense
 
 One criticism of Python (besides the use of whitespace) is the need to include self as the first argument to instance methods (the kind of method you’ve seen in the previous examples). Python uses the self argument to find the right object’s attributes and methods. For an example, I’ll show how you would call an object’s method, and what Python actually does behind the scenes.
@@ -839,21 +890,20 @@ When you see an initial self argument in methods within a class definition, it�
 In contrast, a class method affects the class as a whole. Any change you make to the class affects all of its objects. Within a class definition, a preceding @classmethod decorator indicates that that following function is a class method. Also, the first parameter to the method is the class itself. The Python tradition is to call the parameter cls, because class is a reserved word and can’t be used here. Let’s define a class method for A that counts how many object instances have been made from it:
 
 ```python
->>> class A ():
-...     count = 0
-...     def __init__(self):
-...         A.count += 1
-...     def exclaim(self):
-...         print ("I'm an A!")
-...     @classmethod
-...     def kids(cls):
-...         print ("A has", cls.count, "little objects.")
+class A ():
+    count = 0
+    def __init__(self):
+        A.count += 1
+    def exclaim(self):
+        print ("I'm an A!")
+    @classmethod
+    def kids(cls):
+        print ("A has", cls.count, "little objects.")
 
->>> easy_a = A()
->>> breezy_a = A()
->>> wheezy_a = A()
->>> A.kids()
-A has 3 little objects.
+easy_a = A()
+breezy_a = A()
+wheezy_a = A()
+A.kids() # A has 3 little objects.
 ```
 Notice that we referred to `A.count` (the class attribute) in `__init__()` rather than `self.count` (which would be an object instance attribute). In the kids() method, we used `cls.count`, but we could just as well have used `A.count`.
 
@@ -862,17 +912,47 @@ Notice that we referred to `A.count` (the class attribute) in `__init__()` rathe
 A third type of method in a class definition affects neither the class nor its objects; it’s just in there for convenience instead of floating around on its own. It’s a static method, preceded by a @staticmethod decorator, with no initial self or cls parameter. Here’s an example that serves as a commercial for the class CoyoteWeapon:
 
 ```python
->>> class CoyoteWeapon ():
-... @staticmethod
-... def commercial():
-... print ('This CoyoteWeapon has been brought to you by Acme')
-...
->>>
->>> CoyoteWeapon.commercial()
-This CoyoteWeapon has been brought to you by Acme
+class CoyoteWeapon ():
+    @staticmethod
+    def commercial():
+        print ('This CoyoteWeapon has been brought to you by Acme')
+
+CoyoteWeapon.commercial() # This CoyoteWeapon has been brought to you by Acme
 ```
 
 Notice that we didn’t need to create an object from class CoyoteWeapon to access this method. Very class-y.
+
+```python
+class Time:
+
+    def __init__(self, hour, minute, second):
+        self.hour = hour
+        self.minute = minute
+        self.second = second
+        
+    @classmethod     
+    def is_time_valid(cls,time_string):
+        a,b,c = map(int,time_string.split(':'))
+        if  0<= a <=24 and 0<= b <= 59 and 0 <= c <= 60:
+            return True
+        else:
+            return False 
+           
+    @staticmethod   
+    def from_string(time_string):
+        a,b,c = map(int,time_string.split(':'))
+        time = Time(a,b,c)
+        return time    
+
+        
+time_string = '23:25:59' # input()
+
+if Time.is_time_valid(time_string):
+    t = Time.from_string(time_string)
+    print(t.hour, t.minute, t.second)
+else:
+    print('잘못된 시간 형식입니다.')
+```
 
 ## Duck Typing
 
@@ -961,7 +1041,39 @@ This behavior is sometimes called duck typing, after the old saying:
 Who are we to argue with a wise saying about ducks?
 
 
-## Magic Methods
+덕 타이핑은 실제 타입(클래스)은 상관하지 않고, 구현된 메서드로만 판단하는 방식입니다.    
+덕 타이핑은 "만약 어떤 새가 오리처럼 걷고, 헤엄치고, 꽥꽥거리는 소리를 낸다면 나는 그 새를 오리라 부르겠다."라는 덕 테스트(오리 테스트)에서 유래한 말입니다.
+
+다음과 같이 in_the_forest 함수는 객체에 quack 메서드와 feathers 메서드만 있으면 함수를 호출할 수 있습니다.    
+즉, 객체에 quack 메서드와 feathers 메서드가 있으면 오리 타입으로 간주하는 방식입니다.
+
+```python
+class Duck:                 # 오리 클래스를 만들고 quack과 feathers 메서드 정의
+    def quack(self): print('꽥~!')
+    def feathers(self): print('오리는 흰색과 회색 털을 가지고 있습니다.')
+ 
+class Person:               # 사람 클래스를 만들고 quack과 feathers 메서드 정의
+    def quack(self): print('사람은 오리를 흉내냅니다. 꽥~!')
+    def feathers(self): print('사람은 땅에서 깃털을 주워서 보여줍니다.')
+ 
+def in_the_forest(duck):    # 덕 타이핑을 사용하는 함수. 클래스의 종류는 상관하지 않음
+    duck.quack()            # quack 메서드와
+    duck.feathers()         # feathers 메서드만 있으면 함수를 호출할 수 있음
+ 
+donald = Duck()             # 오리 클래스로 donald 인스턴스를 만듦
+james = Person()            # 사람 클래스로 james 인스턴스를 만듦
+in_the_forest(donald)       # in_the_forest에 오리 클래스의 인스턴스 donald를 넣음
+in_the_forest(james)        # in_the_forest에 사람 클래스의 인스턴스 james를 넣음
+'''
+꽥~!
+오리는 흰색과 회색 털을 가지고 있습니다.
+사람은 오리를 흉내냅니다. 꽥~!
+사람은 땅에서 깃털을 주워서 보여줍니다.
+'''
+
+```
+
+## **Magic Methods**
 
 You can now create and use basic objects. What you’ll learn in this section might surprise you—in a good way.
 
@@ -1106,6 +1218,46 @@ Word("ha")
 ha
 ```
 To explore even more special methods, check out the [Python documentation](https://docs.python.org/3/reference/datamodel.html#special-method-names).
+
+```python
+class Person:
+    '''사람 클래스입니다.'''
+
+    def greeting(self):
+        '''인사 메서드입니다.'''
+        print('Hello')
+
+
+print(Person.__doc__)  # 사람 클래스입니다.
+print(Person.greeting.__doc__)  # 인사 메서드입니다.
+
+maria = Person()
+print(maria.greeting.__doc__)  # 인사 메서드입니다.
+
+print(Person.__dict__) # 사용 가능 메서드, 속성 표시
+```
+
+## 클래스.___mro__()
+
+```python
+class A:
+    def greeting(self):
+        print('안녕하세요. A입니다.')
+class B(A):
+    def greeting(self):
+        print('안녕하세요. B입니다.')
+class C(A):
+    def greeting(self):
+        print('안녕하세요. C입니다.')
+class D(B, C):
+    pass
+
+x = D()
+x.greeting()  # 안녕하세요. B입니다.
+
+print(D.mro())  
+# [<class '__main__.D'>, <class '__main__.B'>, <class '__main__.C'>, <class '__main__.A'>, <class 'object'>]
+```
 
 ## Aggregation and Composition
 
@@ -1454,3 +1606,39 @@ class Robot :
 robbie = Robot()
 print ( robbie.does() )
 ```
+
+## 추상 클래스(abstract class)
+
+```python
+from abc import ABCMeta, abstractclassmethod
+ 
+class 추상클래스이름(metaclass=ABCMeta):
+    @abstractmethod
+    def 메서드이름(self):
+        코드
+```
+
+```python
+from abc import *
+ 
+class StudentBase(metaclass=ABCMeta):
+    @abstractmethod
+    def study(self):
+        pass
+ 
+    @abstractmethod
+    def go_to_school(self):
+        pass
+ 
+class Student(StudentBase):
+    def study(self):
+        print('공부하기')
+ 
+    def go_to_school(self):
+        print('학교가기')
+ 
+james = Student()
+james.study()
+james.go_to_school()
+```
+

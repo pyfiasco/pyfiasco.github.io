@@ -17,47 +17,6 @@ nav_order: 8
 
 ---
 
-- 8. Dictionaries and Sets.
-   - Dictionaries
-      - Create with {}
-      - Create with dict()
-      - Convert with dict()
-      - Add or Change an Item by [ key ]
-      - Get an Item by [key] or with get()
-      - Get All keys with *keys()*
-      - Get All Values with values()
-      - Get All key-Value Pairs with items()
-      - Get Length with len()
-      - Combine Dictionaries with {**a, **b}
-      - Combine Dictionaries with update()
-      - Delete an Item by key with del
-      - Get an Item by key and Delete It with pop()
-      - Delete All Items with clear()
-      - Test for a key with in
-      - Assign with =
-      - Copy with copy()
-      - Copy Everything with deepcopy()
-      - Compare Dictionaries
-      - Iterate with for and in
-      - dictionary Comprehensions
-   - Sets
-      - Create with set()
-      - Convert with set()
-      - Get Length with len()
-      - Add an Item with add()
-      - Delete an Item with remove()
-      - Iterate with for and in
-      - Test for a Value with in
-      - Combinations and Operators
-      - Set Comprehensions
-      - Create an Immutable Set with frozenset()
-   - Data Structures So Far
-   - Make Bigger Data Structures
-   - Coming Up
-   - Things to Do
-
-
-
 ## Dictionaries
 
 - `dictionary`는 mutable 자료형이다.   
@@ -1177,4 +1136,244 @@ plots = ['A nun turns into a monster','A haunted yarn shop','Check your exits']
 movies = dict(zip(titles, plots))
 print(movies)
 ```
+
+# 딕셔너리 응용
+
+## 딕셔너리에 키-값 쌍 추가하기
+딕셔너리의 중요한 기능 중 하나가 바로 키-값 쌍 추가입니다. 
+- setdefault: 키-값 쌍 추가
+- update: 키의 값 수정, 키가 없으면 키-값 쌍 추가
+
+### 딕셔너리에 키와 기본값 저장하기
+```python
+x = {'a': 10, 'b': 20, 'c': 30, 'd': 40}
+x.setdefault('e')   # x['e'] = None
+print(x)            # {'a': 10, 'b': 20, 'c': 30, 'd': 40, 'e': None}
+
+x.setdefault('f', 100)       #x['f'] = 100
+print(x)            # {'a': 10, 'b': 20, 'c': 30, 'd': 40, 'e': None, 'f': 100}
+```
+### 딕셔너리에서 키의 값 수정하기
+```python
+x = {'a': 10, 'b': 20, 'c': 30, 'd': 40}
+x.update(a=90) 
+print(x)  # {'a': 90, 'b': 20, 'c': 30, 'd': 40}
+
+x.update(a=900, f=60)
+print(x)  # {'a': 900, 'b': 20, 'c': 30, 'd': 40, 'f': 60}
+
+y = {1: 'one', 2: 'two'}
+y.update({1: 'ONE', 3: 'THREE'})
+print(y)  # {1: 'ONE', 2: 'two', 3: 'THREE'}
+
+y.update([[2, 'TWO'], [4, 'FOUR']])
+print(y) # {1: 'ONE', 2: 'TWO', 3: 'THREE', 4: 'FOUR'}
+
+y.update(zip([1, 2], ['one', 'two']))
+print(y) # {1: 'one', 2: 'two', 3: 'THREE', 4: 'FOUR'}
+```
+[참고] setdefault와 update의 차이
+setdefault는 키-값 쌍 추가만 할 수 있고, 이미 들어있는 키의 값은 수정할 수 없습니다.    
+하지만 update는 키-값 쌍 추가와 값 수정이 모두 가능합니다. 
+```python
+x = {'a': 10, 'b': 20, 'c': 30, 'd': 40}
+x.setdefault('a', 90)
+print(x) # {'a': 10, 'b': 20, 'c': 30, 'd': 40}
+```
+
+### 딕셔너리에서 키-값 쌍 삭제하기
+```python
+x = {'a': 10, 'b': 20, 'c': 30, 'd': 40}
+x.pop('a') 
+print(x) # {'b': 20, 'c': 30, 'd': 40}
+
+result = x.pop('z', 0)  # 삭제할 key가 없을 때 반환할 값 지정
+print(result) # 0
+x = {'a': 10, 'b': 20, 'c': 30, 'd': 40}
+del x['a']  # 10
+print(x) # {'b': 20, 'c': 30, 'd': 40}
+```
+### 딕셔너리에서 임의의 키-값 쌍 삭제하기
+popitem()은 딕셔너리에서 마지막 키-값 쌍을 삭제한 뒤 삭제한 키-값 쌍을 튜플로 반환합니다. 
+```python
+x = {'a': 10, 'b': 20, 'c': 30, 'd': 40}
+result = x.popitem()
+print(result) # ('d', 40)
+print(x) # {'a': 10, 'b': 20, 'c': 30}
+```
+### 딕셔너리의 모든 키-값 쌍을 삭제하기
+clear()는 딕셔너리의 모든 키-값 쌍을 삭제합니다. 다음은 딕셔너리 x의 모든 키-값 쌍을 삭제하여 빈 딕셔너리 {}가 됩니다.
+```python
+x = {'a': 10, 'b': 20, 'c': 30, 'd': 40}
+x.clear()
+print(x) # {}
+```
+### 딕셔너리에서 키의 값을 가져오기
+```python
+x = {'a': 10, 'b': 20, 'c': 30, 'd': 40}
+result = x.get('a')
+print(result) # 10
+
+result = x.get('z', 0)   # key가 없을 때 반환할 값 지정
+print(result) # 0
+```
+### 딕셔너리에서 모든 데이터 가져오기 : 키-값 쌍, 키, 값
+- items: 키-값 쌍을 모두 가져옴
+- keys: 키를 모두 가져옴
+- values: 값을 모두 가져옴   
+
+```python
+x = {'a': 10, 'b': 20, 'c': 30, 'd': 40}
+result = x.items()
+print(result) # dict_items([('a', 10), ('b', 20), ('c', 30), ('d', 40)])
+
+result = x.keys()
+print(result) # dict_keys(['a', 'b', 'c', 'd'])
+
+result = x.values()
+print(result) # dict_values([10, 20, 30, 40])
+```
+
+### 리스트와 튜플로 딕셔너리 만들기
+dict.fromkeys(키리스트)는 키 리스트로 딕셔너리를 생성하며 값은 모두 None으로 저장합니다.
+dict.fromkeys(키리스트, 값)처럼 키 리스트와 값을 지정하면 해당 값이 키의 값으로 저장됩니다.
+```python
+keys = ['a', 'b', 'c', 'd']
+x = dict.fromkeys(keys)
+print(x) # {'a': None, 'b': None, 'c': None, 'd': None}
+
+y = dict.fromkeys(keys, 100)
+print(y) # {'a': 100, 'b': 100, 'c': 100, 'd': 100}
+```
+### defaultdict 사용하기
+지금까지 사용한 딕셔너리(dict)는 없는 키에 접근했을 경우 에러가 발생합니다.
+defaultdict는 없는 키에 접근하더라도 에러가 발생하지 않으며 기본값을 반환합니다. defaultdict는 collections 모듈에 들어있으며 기본값 생성 함수를 넣습니다.
+
+defaultdict(기본값생성함수)
+```python
+x = {'a': 0, 'b': 0, 'c': 0, 'd': 0}
+x['z']    # 키 'z'는 없음
+Traceback (most recent call last):
+  File "<pyshell#5>", line 1, in <module>
+    x['z']
+KeyError: 'z'
+
+from collections import defaultdict    # collections 모듈에서 defaultdict를 가져옴
+y = defaultdict(int)    # int로 기본값 생성
+y['z']
+print(y) # defaultdict(<class 'int'>, {'z': 0})
+z = defaultdict(lambda: 'python')
+z['a']
+z[0]
+print(z) # defaultdict(<function <lambda> at 0x00000281C533D120>, {'a': 'python', 0: 'python'})
+```
+
+## 딕셔너리 표현식 사용하기
+
+- {키: 값 for 키, 값 in 딕셔너리}
+- dict({키: 값 for 키, 값 in 딕셔너리})
+
+```python
+keys = ['a', 'b', 'c', 'd']
+
+# {'a': None, 'b': None, 'c': None, 'd': None}
+d1 = dict.fromkeys(keys)
+d = { k:v for k,v in dict.fromkeys(keys).items()}
+
+# {'a': 0, 'b': 0, 'c': 0, 'd': 0}
+d1 = dict.fromkeys(keys,0)
+d = { k:0 for k,v in dict.fromkeys(keys).items()}
+d3 = { k:0 for k in dict.fromkeys(keys).keys()}
+d2 = { k:0 for k in keys}
+```
+## 딕셔너리 표현식에서 if 조건문 사용하기
+- for문에서 dictionary의 변경이 발생하면 에러 발생   
+
+```python
+x = {'a': 10, 'b': 20, 'c': 30, 'd': 40}
+ 
+for key, value in x.items():
+    if value == 20:    # 값이 20이면
+        del x[key]     # 키-값 쌍 삭제
+ 
+print(x)
+```
+
+```python
+x = {'a': 10, 'b': 20, 'c': 30, 'd': 40}
+x = {key: value for key, value in x.items() if value != 20}  #값이 20인 항목 제외
+print(x) # {'a': 10, 'c': 30, 'd': 40}
+
+x = {'a': 10, 'b': 20, 'c': 30, 'd': 40}
+x = {key: value for key, value in x.items() if key != 'a'}  #key가 'a'인 항목 제외
+print(x) # {'b': 20, 'c': 30, 'd': 40}
+```
+
+## 딕셔너리 안에서 딕셔너리 사용하기
+- 딕셔너리 = {키1: {키A: 값A}, 키2: {키B: 값B}}
+- 딕셔너리[key1][key2] 형식으로 접근
+- 딕셔너리[key1][key2] = 값 형식으로 값 할당   
+
+```python
+from collections import defaultdict
+student = ['정길주','박승화','임태익']
+sub = ['kor','math','eng']
+kor = [100,25,88]
+math = [78,99,75]
+eng = [77,88,77]
+
+dic = defaultdict(int)
+t = list(zip(student,kor,math,eng))
+
+for i in t:
+    sub_dict = {}
+    for j in range(3):
+        sub_dict['kor'] = i[1]
+        sub_dict['math'] = i[2]
+        sub_dict['eng'] = i[3]  
+    dic.setdefault(i[0],sub_dict)
+
+print(dict(dic))
+```
+
+## set 정리
+
+| 메서드 |집합 연산자| 설명 |
+|:-------|:-----------|:----|
+| set.union(세트1, 세트2) |  \| | 두 세트의 합집합 |
+| set.intersection(세트1, 세트2) | & | 두 세트의 교집합 |
+| set.difference(세트1, 세트2) | - | 두 세트의 차집합 |
+| set.symmetric_difference(세트1, 세트2) | ^          | 두 세트의 대칭차집합 |
+| update(다른세트) | \|= | 현재 세트에 다른 세트를 더함 |
+| intersection_update(다른세트) | &= | 현재 세트와 다른 세트 중에서 겹치는 요소만 현재 세트에 저장 |
+| difference_update(다른세트) |  -= |  현재 세트에서 다른 세트를 뺌 |
+| symmetric_difference_update(다른세트) |  ^= | 현재 세트와 다른 세트 중에서 겹치지 않는 요소만 현재 세트에 저장 |
+| issubset(다른세트) | <= | 현재 세트가 다른 세트의 부분집합인지 확인 |
+|                    | <  | 현재 세트가 다른 세트의 진부분집합인지 확인 |
+|  issuperset(다른세트)                  | >=         |  현재 세트가 다른 세트의 상위집합인지 확인                    |
+|                                       | >           |  현재 세트가 다른 세트의 진상위집합인지 확인                  |   
+|  isdisjoint(다른세트)                  |             |   현재 세트가 다른 세트와 겹치지 않는지 확인                  |
+|  add(요소)                             |             |  세트에 요소를 추가                                         |
+|  remove(요소)                         |               |  세트에서 특정 요소를 삭제, 없으면 에러 발생                 |
+|  discard(요소)                        |              |  세트에서 특정 요소를 삭제, 요소가 없으면 그냥 넘어감          |
+| pop()                                 |              |  세트에서 임의의 요소를 삭제하고 해당 요소를 반환              | 
+|  clear()                              |              |  세트에서 모든 요소를 삭제                                   |
+|  copy()                               |              |  세트를 복사하여 새로운 세트 생성                             |
+
+
+## Set 표현식 
+{식 for 변수 in 반복가능한값}   
+set(식 for 변수 in 반복가능한값)   
+{i for i in 'apple'}
+
+{식 for 변수 in 세트 if 조건식}   
+set(식 for 변수 in 세트 if 조건식)   
+{i for i in 'pineapple' if i not in 'apl'}   
+
+
+
+
+
+
+ 
 
