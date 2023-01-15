@@ -415,8 +415,270 @@ for i in g:
 <generator object <genexpr> at 0x024F02A0>
 ```
 
+## coroutine
+
+코루틴(coroutine)은 `cooperative routine`를 의미하는데 서로 협력하는 루틴이라는 뜻입니다.    
+즉, 메인 루틴과 서브 루틴처럼 종속된 관계가 아니라 서로 `대등한 관계`이며 특정 시점에 상대방의 코드를 실행합니다.
+
+참고로 함수의 코드를 실행하는 지점을 진입점(entry point)이라고 하는데, 코루틴은 `진입점`이 여러 개인 함수입니다.
+
+
+### 코루틴에 값 보내기
+
+코루틴은 제너레이터의 특별한 형태입니다.    
+제너레이터는 yield로 값을 발생시켰지만 코루틴은 `(yield)`로 값을 받아올 수 있습니다.  => 변수 = (yield)
+메인 프로시저에서 코루틴에 값을 보내면서 코드를 실행할 때는 `send 메서드`를 사용합니다 => 코루틴객체.send(값)
+
+[참조] next와 send의 차이를 살펴보면 next는 코루틴의 코드를 실행하지만 값을 보내지 않을 때 사용하고,    
+        send는 값을 보내면서 코루틴의 코드를 실행할 때 사용합니다.
+
+```python
+def number_coroutine():
+    while True:        # 코루틴을 계속 유지하기 위해 무한 루프 사용
+        x = (yield)    # 코루틴 바깥에서 값을 받아옴, yield를 괄호로 묶어야 함
+        print(x)
+ 
+co = number_coroutine()
+next(co)      # 코루틴 안의 yield까지 코드 실행(최초 실행)
+ 
+co.send(1)    # 코루틴에 숫자 1을 보냄
+co.send(2)    # 코루틴에 숫자 2을 보냄
+co.send(3)    # 코루틴에 숫자 3을 보냄
+```
+
+![Alt text](/assets/images/%ED%99%94%EB%A9%B4%20%EC%BA%A1%EC%B2%98%202023-01-15%20082158.png)
+
+{: .note}
+> 코루틴객체.send(None)과 같이 send 메서드에 None을 지정해도 코루틴의 코드를 최초로 실행할 수 있습니다.
+
+### 코루틴 바깥으로 값 전달하기
+
+`(yield 변수)` 형식으로 yield에 변수를 지정한 뒤 괄호로 묶어주면 값을 받아오면서 바깥으로 값을 전달합니다.    
+그리고 yield를 사용하여 바깥으로 전달한 값은 `next 함수(__next__ 메서드)`와 `send 메서드`의 반환값으로 나옵니다.
+
+[coroutine]
+
+- 변수 = (yield 변수)
+
+[main process]
+
+- 변수 = next(코루틴객체)
+- 변수 = 코루틴객체.send(값)
+
+```python
+def sum_coroutine():
+    total = 0
+    while True:
+        x = (yield total)    # 코루틴 바깥에서 값을 받아오면서 바깥으로 값을 전달
+        total += x
+ 
+co = sum_coroutine()
+print(next(co))      # 0: 코루틴 안의 yield까지 코드를 실행하고 코루틴에서 나온 값 출력
+ 
+print(co.send(1))    # 1: 코루틴에 숫자 1을 보내고 코루틴에서 나온 값 출력
+print(co.send(2))    # 3: 코루틴에 숫자 2를 보내고 코루틴에서 나온 값 출력
+print(co.send(3))    # 6: 코루틴에 숫자 3을 보내고 코루틴에서 나온 값 출력
+```
+
+![Alt text](/assets/images/%ED%99%94%EB%A9%B4%20%EC%BA%A1%EC%B2%98%202023-01-15%20083731.png)
+
+```python
+def find(word):
+    result = False
+    while True:        
+        x = (yield result)
+        result = word in x
+
+
+f = find('Python')
+next(f)
+
+print(f.send('Hello, Python!'))
+print(f.send('Hello, world!'))
+print(f.send('Python Script'))
+
+f.close()
+```
+
+- `제너레이터`와 `코루틴`의 차이점   
+제너레이터는 `next 함수(__next__ 메서드)`를 반복 호출하여 값을 얻어내는 방식
+코루틴은 `next 함수(__next__ 메서드)`를 한 번만 호출한 뒤 `send`로 값을 주고 받는 방식
+
+- 값을 보내지 않고 코루틴의 코드 실행하기   
+값을 보내지 않으면서 코루틴의 코드를 실행할 때는 `next 함수(__next__ 메서드)`만 사용하면 됩니다.    
+잘 생각해보면 이 방식이 일반적인 제너레이터입니다.
+
+### 코루틴을 종료하고 예외 처리하기
+
+만약 코루틴을 강제로 종료하고 싶다면 `close 메서드`를 사용합니다. : 코루틴객체.close()    
+
+```python
+def number_coroutine():
+    while True:
+        x = (yield)
+        print(x, end=' ')
+ 
+co = number_coroutine()
+next(co)
+ 
+for i in range(20):
+    co.send(i)
+ 
+co.close()    # 코루틴 종료
+```
+
+**GeneratorExit** 예외 처리하기
+
+close 메서드를 호출하면 코루틴이 종료될 때 GeneratorExit 예외가 발생합니다. 따라서 이 예외를 처리하면 코루틴의 종료 시점을 알 수 있습니다.
+
+```python
+def number_coroutine():
+    try:
+        while True:
+            x = (yield)
+            print(x, end=' ')
+    except GeneratorExit:  # 코루틴이 종료 될 때 GeneratorExit 예외 발생
+        print()
+        print('코루틴 종료')
+
+
+co = number_coroutine()
+next(co)
+
+for i in range(20):
+    co.send(i)
+
+co.close()
+```
+
+코루틴 안에서 예외 발생시키기
+
+throw메서드로 예외를 던진다.지정된 메시지는 except as의 변수에 들어갑니다 : 코루틴객체.throw(예외이름, 에러메시지)
+except문에서 yield 값이 생성되면 반환값으로 반환된다.   
+
+```python
+def sum_coroutine():
+    try:
+        total = 0
+        while True:
+            x = (yield)
+            total += x
+    except RuntimeError as e:
+        print(e)
+        yield total    # 코루틴 바깥으로 값 전달
+ 
+co = sum_coroutine()
+next(co)
+ 
+for i in range(20):
+    co.send(i)
+ 
+print(co.throw(RuntimeError, '예외로 코루틴 끝내기')) # 190 반환 - except문에서 생성된 yield 값
+
+'''
+예외로 코루틴 끝내기
+190
+'''
+```
+
+제너레이터에서 yield from을 사용하면 값을 바깥으로 여러 번 전달한다고 했습니다.    
+하지만 `yield from 코루틴()`를 지정하면 해당 코루틴에서 return으로 반환한 값을 가져옵니다.   
+
+변수 = yield from 코루틴()
+다음은 코루틴에서 숫자를 누적한 뒤 합계를 yield from으로 가져옵니다.
+
+```python
+def accumulate():
+    total = 0
+    while True:
+        x = (yield)  # 코루틴 바깥에서 값을 받아옴
+        if x is None:  # 받아온 값이 None이면
+            return total  # 합계 total을 반환
+        total += x
+
+
+def sum_coroutine():
+    while True:
+        total = yield from accumulate()  # accumulate의 반환값을 가져옴
+        print(total)
+
+
+co = sum_coroutine()
+next(co)
+
+for i in range(1, 11):  # 1부터 10까지 반복
+    co.send(i)  # 코루틴 accumulate에 숫자를 보냄
+co.send(None)  # 코루틴 accumulate에 None을 보내서 숫자 누적을 끝냄
+
+for i in range(1, 101):  # 1부터 100까지 반복
+    co.send(i)  # 코루틴 accumulate에 숫자를 보냄
+co.send(None)  # 코루틴 accumulate에 None을 보내서 숫자 누적을 끝냄
+```
+
+- 코루틴 내에서 StopIteration 예외 발생시키기
+
+raise로 StopIteration 예외를 직접 발생시키면 RuntimeError로 바뀌므로 이 방법은 사용할 수 없습니다.   
+파이썬 3.7부터는 그냥 return 값을 사용해주세요.
+
+
+- 코루틴의 yield from으로 값을 발생시키기
+이번 예제에서는 x = (yield)와 같이 코루틴 바깥에서 보낸 값만 받아왔습니다. 하지만 코루틴에서 yield에 값을 지정해서 바깥으로 전달했다면 yield from은 해당 값을 다시 바깥으로 전달합니다.
+
+```python
+def number_coroutine():
+    x = None
+    while True:
+        x = (yield x)    # 코루틴 바깥에서 값을 받아오면서 바깥으로 값을 전달
+        if x == 3:
+            return x
+ 
+def print_coroutine():
+    while True:
+        x = yield from number_coroutine()   # 하위 코루틴의 yield에 지정된 값을 다시 바깥으로 전달
+        print('print_coroutine:', x)
+ 
+co = print_coroutine()
+next(co)
+ 
+x = co.send(1)    # number_coroutine으로 1을 보냄
+print(x)          # 1: number_coroutine의 yield에서 바깥으로 전달한 값
+x = co.send(2)    # number_coroutine으로 2를 보냄
+print(x)          # 2: number_coroutine의 yield에서 바깥으로 전달한 값
+co.send(3)        # 3을 보내서 반환값을 출력하도록 만듦
+
+'''
+1
+2
+print_coroutine: 3
+'''
+
+```
 
 
 
 
+def calc():
+    result =0
+    while True:
+        ex = (yield result)
+        target = ex.split()
+        x = int(target[0])
+        y = int(target[2])
+        if target[1] =='+':
+            result = x + y
+        if target[1] =='-':
+            result = x - y
+        if target[1] =='*':
+            result = x * y        
+        if target[1] =='/':
+            result = x / y   
+                 
+expressions = '3 * 4, 10 / 5, 20 + 39'.split(', ')
 
+c = calc()
+next(c)
+
+for e in expressions:
+    print(c.send(e))
+
+c.close()
