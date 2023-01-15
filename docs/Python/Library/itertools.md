@@ -44,23 +44,24 @@ for item in itertools.accumulate([1, 2, 3, 4], multiply):
 ```
 
 
+## iterable & iterator   
 
-이터레이터를 만들기 전에 먼저 `반복 가능한 객체(iterable)`에 대해 알아보겠습니다.    
-반복 가능한 객체는 말 그대로 반복할 수 있는 객체인데 우리가 흔히 사용하는 문자열, 리스트, 딕셔너리, 세트, range객체가 반복 가능한 객체입니다. 즉, 요소가 여러 개 들어있고, 한 번에 하나씩 꺼낼 수 있는 객체입니다.
-객체가 반복 가능한 객체인지 알아보는 방법은 객체에 `__iter__` 메서드가 들어있는지 확인해보면 됩니다. dir(객체)
+이터레이터를 만들기 전에 먼저 `반복 가능한 객체(iterable)`에 대해 알아보겠습니다.      
+반복 가능한 객체는 말 그대로 반복할 수 있는 객체인데 우리가 흔히 사용하는 문자열, 리스트, 딕셔너리, 세트, range객체가 반복 가능한 객체입니다. 즉, 요소가 여러 개 들어있고, 한 번에 하나씩 꺼낼 수 있는 객체입니다.   
+객체가 반복 가능한 객체인지 알아보는 방법은 객체에 `__iter__` 메서드가 들어있는지 확인해보면 됩니다. dir(객체)   
 
-`반복 가능한 객체(iterable)`는 요소를 한 번에 하나씩 가져올 수 있는 객체이고, `이터레이터(iterator)`는 `__next__` 메서드를 사용해서 차례대로 값을 꺼낼 수 있는 객체입니다. `반복 가능한 객체(iterable)`와 `이터레이터(iterator)`는 별개의 객체이므로 둘은 구분해야 합니다. 
+`반복 가능한 객체(iterable)`는 요소를 한 번에 하나씩 가져올 수 있는 객체이고, `이터레이터(iterator)`는 `__next__` 메서드를 사용해서 차례대로 값을 꺼낼 수 있는 객체입니다. `반복 가능한 객체(iterable)`와 `이터레이터(iterator)`는 별개의 객체이므로 둘은 구분해야 합니다.    
 
 이처럼 `반복 가능한 객체`는 `__iter__` 메서드로 `이터레이터`를 얻고, `이터레이터`의 `__next__` 메서드로 반복합니다.
 
 
 ```python
-L = ['a','b','c']
-it = L.__iter__()
-print(it.__next__()) # a
-print(it.__next__()) # b
-print(it.__next__()) # c
-print(it.__next__()) # StopIteration 예외를 발생
+L = ['a', 'b', 'c']
+it = L.__iter__()  # iter(L)
+print(it.__next__())  # a
+print(it.__next__())  # b
+print(it.__next__())  # c
+# print(it.__next__())  # StopIteration 예외를 발생
 ```
 리스트, 튜플, range, 문자열은 반복 가능한 객체이면서 시퀀스 객체입니다.    
 하지만, 딕셔너리와 세트는 반복 가능한 객체이지만 시퀀스 객체는 아닙니다. 
@@ -69,8 +70,7 @@ print(it.__next__()) # StopIteration 예외를 발생
 
 ## 이터레이터 만들기
 
-이제 `__iter__`, `__next__` 메서드를 구현해서 직접 이터레이터를 만들어보겠습니다.    
-간단하게 range(횟수)처럼 동작하는 이터레이터입니다.
+이제 `__iter__`, `__next__` 메서드를 구현해서 직접 이터레이터를 만들어보겠습니다.   
 
 ```python
 class 이터레이터이름:
@@ -81,6 +81,8 @@ class 이터레이터이름:
     def __next__(self):
         코드
 ```
+
+간단하게 range(횟수)처럼 동작하는 이터레이터입니다.
 
 ```python
 class Counter:
@@ -120,6 +122,8 @@ class 이터레이터이름:
     def __getitem__(self, 인덱스):
         코드
 ```
+
+다음 코드 추가   
 
 ```python
     def __getitem__(self, index):
@@ -198,7 +202,7 @@ while True:
        break
 ```
 
-심화 학습
+### 심화 학습 예제
 
 ```python
 class TimeIterator:
@@ -256,15 +260,16 @@ def number_generator():
     yield 1
     yield 2
 
-g =  number_generator() 
-for i in g:
-    print(i, end = ' ') # 0 1 2
 
- 
-print(dir(g))   # __iter__, __next__ 존재
+g = number_generator()
+for i in g:
+    print(i, end=' ')  # 0 1 2
+
+print()
+print(dir(g))  # __iter__, __next__ 존재
 ```
 
-next 구현
+- next 구현
 
 ```python
 g = number_generator()
@@ -276,7 +281,9 @@ while True:
 ```
 
 ![Alt text](/assets/images/%ED%99%94%EB%A9%B4%20%EC%BA%A1%EC%B2%98%202023-01-15%20050230.png)
-이렇게 제너레이터는 함수를 끝내지 않은 상태에서 yield를 사용하여 값을 바깥으로 전달할 수 있습니다. 즉, return은 반환 즉시 함수가 끝나지만 yield는 잠시 함수 바깥의 코드가 실행되도록 양보하여 값을 가져가게 한 뒤 다시 제너레이터 안의 코드를 계속 실행하는 방식입니다. 
+
+- yield & return      
+이렇게 제너레이터는 함수를 끝내지 않은 상태에서 yield를 사용하여 값을 바깥으로 전달할 수 있습니다. 즉, `return`은 반환 즉시 함수가 끝나지만 `yield`는 잠시 함수 바깥의 코드가 실행되도록 양보하여 값을 가져가게 한 뒤 다시 제너레이터 안의 코드를 계속 실행하는 방식입니다. 
 
 {: .note}
 > 제너레이터와 return
@@ -336,7 +343,9 @@ for i in number_generator():
 ```
 
 - yield from 이용하여 생성 전달       
-    : yield from 반복가능한객체(이터레이터,제너레이터객체)
+    - yield from 반복가능한객체
+    - yield from 이터레이터
+    - yield from 제너레이터객체
 
 ```python
 def number_generator():
@@ -347,6 +356,7 @@ def number_generator():
 for i in number_generator():
     print(i)
 ```
+
 ```python
 def number_generator(stop):
     n = 0
@@ -390,8 +400,7 @@ def prime_number(start,stop):
 def prime_number_generator(start,stop):
     
     yield from prime_number(start,stop)
-    return 'StopIterator'    
-            
+          
 
 start, stop = map(int, input().split())
 
@@ -426,11 +435,11 @@ for i in g:
 ### 코루틴에 값 보내기
 
 코루틴은 제너레이터의 특별한 형태입니다.    
-제너레이터는 yield로 값을 발생시켰지만 코루틴은 `(yield)`로 값을 받아올 수 있습니다.  => 변수 = (yield)
-메인 프로시저에서 코루틴에 값을 보내면서 코드를 실행할 때는 `send 메서드`를 사용합니다 => 코루틴객체.send(값)
+제너레이터는 yield로 값을 발생시켰지만 코루틴은 `(yield)`로 값을 받아올 수 있습니다.  => 변수 = (yield)   
+메인 프로시저에서 코루틴에 값을 보내면서 코드를 실행할 때는 `send 메서드`를 사용합니다 => 코루틴객체.send(값)   
 
 [참조] next와 send의 차이를 살펴보면 next는 코루틴의 코드를 실행하지만 값을 보내지 않을 때 사용하고,    
-        send는 값을 보내면서 코루틴의 코드를 실행할 때 사용합니다.
+        send는 값을 보내면서 코루틴의 코드를 실행할 때 사용합니다.   
 
 ```python
 def number_coroutine():
@@ -439,13 +448,16 @@ def number_coroutine():
         print(x)
  
 co = number_coroutine()
-next(co)      # 코루틴 안의 yield까지 코드 실행(최초 실행)
+next(co)      # 코루틴 안의 yield까지 코드 실행(최초 실행) = co.send(None)
  
 co.send(1)    # 코루틴에 숫자 1을 보냄
 co.send(2)    # 코루틴에 숫자 2을 보냄
 co.send(3)    # 코루틴에 숫자 3을 보냄
 ```
 
+corotuine 진행
+최초 진입 - 첫 yield 까지
+이후 진행 - 데이터 받고 다음 yield까지
 ![Alt text](/assets/images/%ED%99%94%EB%A9%B4%20%EC%BA%A1%EC%B2%98%202023-01-15%20082158.png)
 
 {: .note}
