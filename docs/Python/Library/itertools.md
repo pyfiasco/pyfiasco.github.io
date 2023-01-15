@@ -518,7 +518,7 @@ f.close()
 
 - 값을 보내지 않고 코루틴의 코드 실행하기   
 값을 보내지 않으면서 코루틴의 코드를 실행할 때는 `next 함수(__next__ 메서드)`만 사용하면 됩니다.    
-잘 생각해보면 이 방식이 일반적인 제너레이터입니다.   
+잘 생각해보면 이 방식이 일반적인 `제너레이터`입니다.   
 
 ### 코루틴을 종료하고 예외 처리하기
 
@@ -563,7 +563,7 @@ for i in range(20):
 co.close()
 ```
 
-코루틴 안에서 예외 발생시키기
+### 코루틴 안에서 예외 발생시키기
 
 throw메서드로 예외를 던진다.지정된 메시지는 except as의 변수에 들어갑니다 : 코루틴객체.throw(예외이름, 에러메시지)
 except문에서 yield 값이 생성되면 반환값으로 반환된다.   
@@ -593,11 +593,18 @@ print(co.throw(RuntimeError, '예외로 코루틴 끝내기')) # 190 반환 - ex
 '''
 ```
 
-제너레이터에서 yield from을 사용하면 값을 바깥으로 여러 번 전달한다고 했습니다.    
-하지만 `yield from 코루틴()`를 지정하면 해당 코루틴에서 return으로 반환한 값을 가져옵니다.   
+- 코루틴 내에서 StopIteration 예외 발생시키기   
 
-변수 = yield from 코루틴()
-다음은 코루틴에서 숫자를 누적한 뒤 합계를 yield from으로 가져옵니다.
+raise로 StopIteration 예외를 직접 발생시키면 RuntimeError로 바뀌므로 이 방법은 사용할 수 없습니다.   
+파이썬 3.7부터는 그냥 return 값을 사용해주세요.   
+
+## 변수 = yield from 코루틴() 
+
+제너레이터에서 yield from을 사용하면 값을 바깥으로 여러 번 전달한다고 했습니다.       
+하지만 `yield from 코루틴()`를 지정하면 해당 코루틴에서 return으로 반환한 값을 가져옵니다(이때는 메인프로세서에 반환 X).  
+
+  
+### 코루틴이 (yield)인 경우
 
 ```python
 def accumulate():
@@ -625,13 +632,15 @@ co.send(None)  # 코루틴 accumulate에 None을 보내서 숫자 누적을 끝�
 for i in range(1, 101):  # 1부터 100까지 반복
     co.send(i)  # 코루틴 accumulate에 숫자를 보냄
 co.send(None)  # 코루틴 accumulate에 None을 보내서 숫자 누적을 끝냄
+
+'''
+55
+5050
+'''
 ```
 
-- 코루틴 내에서 StopIteration 예외 발생시키기
 
-raise로 StopIteration 예외를 직접 발생시키면 RuntimeError로 바뀌므로 이 방법은 사용할 수 없습니다.   
-파이썬 3.7부터는 그냥 return 값을 사용해주세요.
-
+### 코루틴이 (yield 변수)인 경우   
 
 - 코루틴의 yield from으로 값을 발생시키기
 이번 예제에서는 x = (yield)와 같이 코루틴 바깥에서 보낸 값만 받아왔습니다. 하지만 코루틴에서 yield에 값을 지정해서 바깥으로 전달했다면 yield from은 해당 값을 다시 바깥으로 전달합니다.
@@ -665,26 +674,23 @@ print_coroutine: 3
 '''
 
 ```
-
-
-
-
+```python
 def calc():
-    result =0
+    result = 0
+    d = {
+        '+': lambda x,y : x+y, 
+        '-': lambda x,y: x-y, 
+        '*': lambda x,y: x*y,
+        '/': lambda x,y: x/y
+        }
     while True:
         ex = (yield result)
         target = ex.split()
-        x = int(target[0])
-        y = int(target[2])
-        if target[1] =='+':
-            result = x + y
-        if target[1] =='-':
-            result = x - y
-        if target[1] =='*':
-            result = x * y        
-        if target[1] =='/':
-            result = x / y   
-                 
+        a = int(target[0])
+        b = int(target[2])
+        result = d[target[1]](a,b)
+
+
 expressions = '3 * 4, 10 / 5, 20 + 39'.split(', ')
 
 c = calc()
@@ -694,3 +700,7 @@ for e in expressions:
     print(c.send(e))
 
 c.close()
+```
+
+
+
