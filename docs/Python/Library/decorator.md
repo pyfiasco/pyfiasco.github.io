@@ -100,8 +100,8 @@ hello
 '''
 ```
 
-hello = decorator1(decorator2(hello))
-hello()
+hello = decorator1(decorator2(hello))   
+hello()   
 
 ## 매개변수와 반환값을 처리하는 데코레이터 만들기
 
@@ -171,8 +171,8 @@ get_min(args=(), kwargs={'x': 10, 'y': 20, 'z': 30}) -> 10
 ###  메서드에 데코레이터 사용하기
 
 클래스를 만들면서 메서드에 데코레이터를 사용할 때는 `self`를 주의해야 합니다.    
-인스턴스 메서드는 항상 self를 받으므로 데코레이터를 만들 때도 wrapper 함수의 첫 번째 매개변수는 self로 지정해야 합니다(클래스 메서드는 `cls`).    
-마찬가지로 데커레이터 함수 정의에서 func를 호출할 때도 `self와 매개변수를 그대로 넣어야 합니다`.
+인스턴스 메서드는 항상 self를 받으므로 데코레이터를 만들 때도 wrapper 함수의 첫 번째 매개변수는 self로 지정해야 합니다 (클래스 메서드는 `cls`).    
+마찬가지로 데커레이터 함수 정의에서 func를 호출할 때도 `self와 매개변수를 그대로 넣어야 합니다`.   
 
 ```python
 decorator_method.py
@@ -256,14 +256,14 @@ wrapper의 반환값은 3의 배수입니다.
 '''
 ```
 
-decorated_add = is_multiple(3)(is_multiple(7)(add))
-decorated_add(10, 20)
+decorated_add = is_multiple(3)(is_multiple(7)(add))   
+decorated_add(10, 20)   
 
 - 원래 함수 이름이 안나온다면?   
 
-함수의 원래 이름을 출력하고 싶다면 functools 모듈의 wraps 데코레이터를 사용해야 합니다. 
+함수의 원래 이름을 출력하고 싶다면 functools 모듈의 wraps 데코레이터를 사용해야 합니다.    
 
-@functools.wraps는 원래 함수의 정보를 유지시켜줍니다. 따라서 디버깅을 할 때 유용하므로 데코레이터를 만들 때는 @functools.wraps를 사용하는 것이 좋습니다.
+@functools.wraps는 원래 함수의 정보를 유지시켜줍니다. 따라서 디버깅을 할 때 유용하므로 데코레이터를 만들 때는 @functools.wraps를 사용하는 것이 좋습니다.   
 
 ```python 
 import functools
@@ -294,9 +294,9 @@ add의 반환값은 3의 배수입니다.
 ```
 ## 클래스로 데코레이터 만들기
 
-클래스를 활용할 때는 인스턴스를 함수처럼 호출하게 해주는 `__call__` 메서드를 구현해야 합니다.
+클래스를 활용할 때는 인스턴스를 함수처럼 호출하게 해주는 `__call__` 메서드를 구현해야 합니다.   
 
-다음은 함수의 시작과 끝을 출력하는 데코레이터입니다.
+다음은 함수의 시작과 끝을 출력하는 데코레이터입니다.   
 
 ```python
 class Trace:
@@ -320,8 +320,8 @@ hello
 hello 함수 끝
 '''
 ```
-trace_hello = Trace(hello)    # 데코레이터에 호출할 함수를 넣어서 인스턴스 생성
-trace_hello()                 # 인스턴스를 호출. __call__ 메서드가 호출됨
+trace_hello = Trace(hello)    # 데코레이터에 호출할 함수를 넣어서 인스턴스 생성   
+trace_hello()                 # 인스턴스를 호출. __call__ 메서드가 호출됨   
 
 ## 클래스로 매개변수와 반환값을 처리하는 데코레이터 만들기
 
@@ -384,7 +384,7 @@ add의 반환값은 3의 배수가 아닙니다.
 7
 '''
 ```
-### 연습문제
+## 연습문제
 
 ```python
 
