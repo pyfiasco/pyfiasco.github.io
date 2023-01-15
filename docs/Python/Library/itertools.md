@@ -113,7 +113,7 @@ a, _, c = map(str,Counter(3))
 print(a,c)
 ```
 
-## 인덱스로 접근할 수 있는 이터레이터 만들기
+### 인덱스로 접근할 수 있는 이터레이터 만들기
 `__getitem__` 메서드를 구현하여 `인덱스로 접근할 수 있는 이터레이터`를 만들어보겠습니다.
 
 
@@ -141,7 +141,7 @@ for i in Counter(3):
 > `__init__` 메서드와 `__getitem__` 메서드만 있어도 iterator 생성 가능(초기화 불필요시 `__getitem__`메서드만으로도 구현 가능)    
 즉 `__getitem__`만 구현해도 이터레이터가 되며 `__iter__`, `__next__`는 생략해도 됩니다.
 
-## list에 __next__메서를 추가하여 iterator 구현
+### list에 __next__메서를 추가하여 iterator 구현
 
 ```python
 class Counter(list):
@@ -674,6 +674,9 @@ print_coroutine: 3
 '''
 
 ```
+
+#### 심화 문제 
+
 ```python
 def calc():
     result = 0
