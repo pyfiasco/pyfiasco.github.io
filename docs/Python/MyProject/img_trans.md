@@ -18,6 +18,11 @@ nav_order: 1
 
 ## 이미지 파일 변환 프로그램 완성
 
+```
+png -> byte data -> io.BytesIO -> PIL -> save
+[link](https://myohyun.tistory.com/218)
+```
+
 ```python
 
 

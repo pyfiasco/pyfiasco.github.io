@@ -15,17 +15,6 @@ nav_order: 13
 1. TOC
 {:toc}
 
-- 13. Calendars and Clocks.
-   - Leap Year
-   - The datetime Module
-   - Using the time Module
-   - Read and Write Dates and Times
-   - All the Conversions
-   - Alternative Modules
-   - Coming Up
-   - Things to Do
-
-
 <!-- Programmers devote a surprising amount of effort to dates and times. Let’s talk about
 
 some of the problems they encounter and then get to some best practices and tricks
@@ -117,10 +106,12 @@ Close enough for now! We will not speak of leap seconds.
 
 The standard datetime module handles (which should not be a surprise) dates and times. It defines four main object classes, each with many methods:
 
-- `date` : years, months, and days
+{: .note}
+> - `date` : years, months, and days
 - `time` : hours, minutes, seconds, and fractions
 - `datetime` : dates, times
 - `timedelta` : date and/or time intervals
+
 
 You can make a date object by specifying a year, month, and day. Those values are then available as attributes:
 
@@ -289,8 +280,9 @@ print(halloween.day) # 31
 now = date.today()
 print(now)         # 오늘 날짜 출력
 
-from datetime import timedelta
+from datetime import *
 delta = timedelta(days=1)
+now = datetime.now()
 tomorrow = now + delta
 print('now : %s, tomorrow : %s'%(now,tomorrow))
 print(now + 17*delta)  # 17일 후
@@ -330,36 +322,35 @@ One way to represent an absolute time is to count the number of seconds since so
 
 The time module’s time() function returns the current time as an epoch value:
 
-```
+```python
 >>> import time
 >>> now = time.time()
-```
-
-```
 >>> now
 1554512132.778233
-```
-More than one billion seconds have ticked by since New Year’s, 1970. Where did the time go?
-
-You can convert an epoch value to a string by using ctime():
-
-```
 >>> time.ctime(now)
 'Fri Apr 5 19:55:32 2019'
 ```
-In the next section, you’ll see how to produce more attractive formats for dates and times.
-Epoch values are a useful least-common denominator for date and time exchange with different systems, such as JavaScript. Sometimes, though, you need actual days, hours, and so forth, which time provides as struct_time objects. localtime() provides the time in your system’s time zone, and gmtime() provides it in UTC:
+<!-- In the next section, you’ll see how to produce more attractive formats for dates and times.
+Epoch values are a useful least-common denominator for date and time exchange with different systems, such as JavaScript. Sometimes, though, you need actual days, hours, and so forth, which time provides as struct_time objects. localtime() provides the time in your system’s time zone, and gmtime() provides it in UTC: -->
 
+```python
+import time
+
+now = time.time()
+t = time.localtime()  # 현시간 표준시
+t1 = time.gmtime()    # 현시간 UTC(절대시간)
+print(now)
+print(t)
+print(t1)
+'''
+1674095102.1614609
+time.struct_time(tm_year=2023, tm_mon=1, tm_mday=19, tm_hour=11, tm_min=25, tm_sec=2, tm_wday=3, tm_yday=19, tm_isdst=0)    
+time.struct_time(tm_year=2023, tm_mon=1, tm_mday=19, tm_hour=2, tm_min=25, tm_sec=2, tm_wday=3, tm_yday=19, tm_isdst=0)     
+
+'''
 ```
->>> time.localtime(now)
-time.struct_time(tm_year=2019, tm_mon=4, tm_mday=5, tm_hour=19,
-tm_min=55, tm_sec=32, tm_wday=4, tm_yday=95, tm_isdst=1)
->>> time.gmtime(now)
-time.struct_time(tm_year=2019, tm_mon=4, tm_mday=6, tm_hour=0,
-tm_min=55, tm_sec=32, tm_wday=5, tm_yday=96, tm_isdst=0)
-```
-My 19:55 (Central time zone, Daylight Savings) was 00:55 in the next day in UTC (formerly called Greenwich time or Zulu time). If you omit the argument to local time() or gmtime(), they assume the current time.
-Some of the tm_... values in struct_time are a bit ambiguous, so take a look at Table 13-1 for more details.
+<!-- My 19:55 (Central time zone, Daylight Savings) was 00:55 in the next day in UTC (formerly called Greenwich time or Zulu time). If you omit the argument to local time() or gmtime(), they assume the current time.
+Some of the tm_... values in struct_time are a bit ambiguous, so take a look at Table 13-1 for more details. -->
 
 Table 13-1. _struct_time_ values
 
@@ -379,7 +370,7 @@ Table 13-1. _struct_time_ values
 
 </div>
 
-If you don’t want to type all those tm_... names, struct_time also acts like a named tuple (see “Named Tuples” on page 195 ), so you can use the indexes from the previous table:
+<!-- If you don’t want to type all those tm_... names, struct_time also acts like a named tuple (see “Named Tuples” on page 195 ), so you can use the indexes from the previous table:
 
 ```
 >>> import time
@@ -406,18 +397,18 @@ Some advice: wherever possible, use UTC instead of time zones.
 UTC is an absolute time, independent of time zones. If you have a server, set its time to UTC; do not use local time.
 More advice: never use daylight savings time if you can avoid it. If you use daylight savings time, an hour disappears at one time of year (“spring ahead”) and occurs twice at another time (“fall back”).
 For some reason, many organizations use local time with daylight savings in their computer systems, but are mystified twice every year by that spooky hour.
-```
+``` -->
 ## Read and Write Dates and Times
 
-isoformat() is not the only way to write dates and times. You already saw the ctime() function in the time module, which you can use to convert epochs to strings:
+<!-- isoformat() is not the only way to write dates and times. You already saw the ctime() function in the time module, which you can use to convert epochs to strings:
 
 ```
 >>> import time
 >>> now = time.time()
 >>> time.ctime(now)
 'Fri Apr 5 19:58:23 2019'
-```
-You can also convert dates and times to strings by using strftime(). This is provided as a method in the datetime, date, and time objects, and as a function in the time module. strftime() uses format strings to specify the output, which you can see in Table 13-2.
+``` -->
+You can also convert dates and times to strings by using `strftime()`. This is provided as a method in the datetime, date, and time objects, and as a function in the time module. strftime() uses format strings to specify the output, which you can see in Table 13-2.
 
 
 Table 13-2. Output specifiers for strftime()
@@ -440,45 +431,44 @@ Table 13-2. Output specifiers for strftime()
 
 </div>
 
-Numbers are zero-padded on the left.
+<!-- Numbers are zero-padded on the left.
 
 Here’s the strftime() function provided by the time module. It converts a struct_time object to a string. We’ll first define the format string fmt and use it again
 
-later:
+later: -->
 
-```
->>> import time
->>> fmt = "It's %A, %B %d, %Y, local time %I:%M:%S%p"
->>> t = time.localtime()
->>> t
-time.struct_time(tm_year=2019, tm_mon=3, tm_mday=13, tm_hour=15,
-tm_min=23, tm_sec=46, tm_wday=2, tm_yday=72, tm_isdst=1)
->>> time.strftime(fmt, t)
-"It's Wednesday, March 13, 2019, local time 03:23:46PM"
-```
-If we try this with a date object, only the date parts will work, and the time defaults to
+- localtime -> 포멧된 time
 
-midnight:
+```python
+import time
+fmt = "It's %A, %B %d, %Y, local time %I:%M:%S%p"
+t = time.localtime()
 
-```
->>> from datetime import date
->>> some_day = date(2019, 7, 4)
->>> fmt = "It's %A, %B %d, %Y, local time %I:%M:%S%p"
->>> some_day.strftime(fmt)
-"It's Thursday, July 04, 2019, local time 12:00:00AM"
-```
-For a time object, only the time parts are converted:
-
-```
->>> from datetime import time
->>> fmt = "It's %A, %B %d, %Y, local time %I:%M:%S%p"
->>> some_time = time(10, 35)
->>> some_time.strftime(fmt)
-"It's Monday, January 01, 1900, local time 10:35:00AM"
+s = time.strftime(fmt, t)
+print(s) # "It's Wednesday, March 13, 2019, local time 03:23:46PM"
 ```
 
+- date객체 -> 포멧된 time
 
-You won’t want to use the day parts from a time object, because they’re meaningless.
+```python
+from datetime import date
+some_day = date(2019, 7, 4)
+fmt = "It's %A, %B %d, %Y, local time %I:%M:%S%p"
+s = some_day.strftime(fmt)
+print(s) # "It's Thursday, July 04, 2019, local time 12:00:00AM"
+```
+- time객체 -> 포멧된 time
+
+```python
+from datetime import time
+fmt = "It's %A, %B %d, %Y, local time %I:%M:%S%p"
+some_time = time(10, 35)
+s=some_time.strftime(fmt)
+print(s) # "It's Monday, January 01, 1900, local time 10:35:00AM"
+```
+
+
+<!-- You won’t want to use the day parts from a time object, because they’re meaningless.
 
 To go the other way and convert a string to a date or time, use strptime() with the same format string. There’s no regular expression pattern matching; the nonformat parts of the string (without %) need to match exactly. Let’s specify a format that matches year-month-day, such as 2019-01-29. What happens if the date string you want to parse has spaces instead of dashes?
 
@@ -496,15 +486,17 @@ File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/_strptime.
 line 359, in _strptime(data_string, format))
 ValueError: time data '2019 01 29' does not match format '%Y-%m-%d
 ```
-If we feed strptime() some dashes, is it happy now?
+If we feed strptime() some dashes, is it happy now? -->
 
+- 문자열 -> struct_time
+```python
+import time
+fmt = "%Y-%m-%d"
+s = time.strptime("2019-01-29", fmt)
+print(s) # time.struct_time(tm_year=2019, tm_mon=1, tm_mday=29, tm_hour=0,tm_min=0, tm_sec=0, tm_wday=1, tm_yday=29, tm_isdst=-1)
 ```
->>> import time
->>> fmt = "%Y-%m-%d"
->>> time.strptime("2019-01-29", fmt)
-time.struct_time(tm_year=2019, tm_mon=1, tm_mday=29, tm_hour=0,
-tm_min=0, tm_sec=0, tm_wday=1, tm_yday=29, tm_isdst=-1)
-```
+
+<!-- 
 Or fix the fmt string to match the date string:
 
 ```
@@ -527,31 +519,47 @@ tt = _strptime(data_string, format)[0]
 File ".../3.7/lib/python3.7/_strptime.py",
 line 359, in _strptime(data_string, format))
 ValueError: time data '2019-13-29' does not match format '%Y-%m-%d
-```
+``` 
+ -->
+
+
 Names are specific to your locale—internationalization settings for your operating system. If you need to print different month and day names, change your locale by using setlocale(); its first argument is locale.LC_TIME for dates and times, and the second is a string combining the language and country abbreviation. Let’s invite some
 
 international friends to a Halloween party. We’ll print the month, day, and day of week in US English, French, German, Spanish, and Icelandic (Icelanders have real elves):
 
+```python
+import locale
+from datetime import date
+halloween = date(2019, 10, 31)
+for lang_country in ['en_us', 'fr_fr', 'de_de', 'es_es', 'is_is','ko-ko']:
+    s = locale.setlocale(locale.LC_TIME, lang_country)
+    print(s)
+    s1 = halloween.strftime('%A, %B %d')
+    print(s1.encode('utf-8', 'replace').decode())
+
+'''
+Thursday, October 31
+jeudi, octobre 31
+Donnerstag, Oktober 31
+jueves, octubre 31
+fimmtudagur, okt?ber 31
+jeudi, octobre 31
+de_de
+Donnerstag, Oktober 31
+es_es
+jueves, octubre 31
+is_is
+fimmtudagur, október 31
+ko-ko
+목요일, 10월 31
+'''
 ```
->>> import locale
->>> from datetime import date
->>> halloween = date(2019, 10, 31)
->>> for lang_country in ['en_us', 'fr_fr', 'de_de', 'es_es', 'is_is',]:
-... locale.setlocale(locale.LC_TIME, lang_country)
-... halloween.strftime('%A, %B %d')
-...
-'en_us'
-'Thursday, October 31'
-'fr_fr'
-'Jeudi, octobre 31'
-'de_de'
-'Donnerstag, Oktober 31'
-'es_es'
-'jueves, octubre 31'
-'is_is'
-'fimmtudagur, október 31'
->>>
+```python
+# 국가코드 확인 : dict형식
+names = locale.locale_alias
+print(names)
 ```
+<!-- 
 Where do you find these magic values for lang_country? This is a bit wonky, but you can try this to get all of them (there are a few hundred):
 
 ```
@@ -580,8 +588,10 @@ So, if you wanted all the German language locales, try this:
 
 ```
 If you run set_locale() and get the error locale.Error: unsupported locale setting that locale is not supported by your operating system. You’ll need
-to figure out what your operating system needs to add it. This can happen even if Python told you (using locale.locale_alias.keys()) that it was a good locale. I had this error when testing on macOS with the locale cy_gb (Welsh, Great Britain), even though it had accepted is_is (Icelandic) in the preceding example.
+to figure out what your operating system needs to add it. This can happen even if Python told you (using locale.locale_alias.keys()) that it was a good locale. I had this error when testing on macOS with the locale cy_gb (Welsh, Great Britain), even though it had accepted is_is (Icelandic) in the preceding example. 
 ```
+-->
+
 ## All the Conversions
 
 Figure 13-1 (from the Python wiki) summarizes all the standard Python time inter‐

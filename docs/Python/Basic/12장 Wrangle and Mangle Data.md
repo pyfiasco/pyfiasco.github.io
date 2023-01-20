@@ -590,65 +590,54 @@ Most of the regular expression examples here use ASCII, but Python’s string fu
 
 Does the string 'Young Frankenstein' begin with the word 'You'? Here’s some code with comments:
 
+```python
+import re
+source = 'Young Frankenstein'
+m = re.match('You', source) # match starts at the beginning of source
+if m: # match returns an object; do this to see what matched
+    print (m.group()) #You
+
+m = re.match('^You', source) # start anchor does the same
+if m:
+    print (m.group()) #You
 ```
->>> import re
->>> source = 'Young Frankenstein'
->>> m = re.match('You', source) # match starts at the beginning of source
->>> if m: # match returns an object; do this to see what matched
-... print (m.group())
-...
-You
->>> m = re.match('^You', source) # start anchor does the same
->>> if m:
-... print (m.group())
-...
-You
-```
+
 How about 'Frank'?
 
-```
->>> import re
->>> source = 'Young Frankenstein'
->>> m = re.match('Frank', source)
->>> if m:
-... print (m.group())
-...
-```
 This time, match() returned nothing, so the if did not run the print statement.
 
 As I mentioned in “New: I Am the Walrus” on page 60, in Python 3.8 you can shorten this example with the so-called walrus operator:
 
+```python
+import re
+source = 'Young Frankenstein'
+if m := re.match('Frank', source):
+    print (m.group())
 ```
->>> import re
->>> source = 'Young Frankenstein'
->>> if m := re.match('Frank', source):
-... print (m.group())
-...
-```
+
 Okay, now let’s use search() to see whether 'Frank' is anywhere in the source string:
 
-```
->>> import re
->>> source = 'Young Frankenstein'
->>> m = re.search('Frank', source)
->>> if m:
-... print (m.group())
-```
-```
+```python
+import re
+source = 'Young Frankenstein'
+if m := re.search('Frank', source):
+    print (m.group())
+
 Frank
 ```
+
 Let’s change the pattern and try a beginning match with match() again:
 
-```
->>> import re
->>> source = 'Young Frankenstein'
->>> m = re.match('.*Frank', source)
->>> if m: # match returns an object
-... print (m.group())
-```
-```
+```python
+import re
+source = 'Young Frankenstein'
+m = re.match('.*Frank', source)
+if m: # match returns an object
+    print (m.group())
+
 Young Frank
 ```
+
 Here’s a brief explanation of how our new '.*Frank' pattern works:
 
 -. means any single character.
@@ -661,69 +650,63 @@ match() returned the string that matched .*Frank: 'Young Frank'.
 
 You can use search() to find the pattern 'Frank' anywhere in the source string 'Young Frankenstein', without the need for the .* wildcards:
 
-```
->>> import re
->>> source = 'Young Frankenstein'
->>> m = re.search('Frank', source)
->>> if m: # search returns an object
-... print (m.group())
-```
-```
+```python
+import re
+source = 'Young Frankenstein'
+m = re.search('Frank', source)
+if m: # search returns an object
+    print (m.group())
+
 Frank
 ```
 ### Find All Matches with findall()
 
 The preceding examples looked for one match only. But what if you want to know how many instances of the single-letter string 'n' are in the string?
 
-```
->>> import re
->>> source = 'Young Frankenstein'
->>> m = re.findall('n', source)
->>> m # findall returns a list
+```python
+import re
+source = 'Young Frankenstein'
+m = re.findall('n', source)
+m # findall returns a list
 ['n', 'n', 'n', 'n']
->>> print ('Found', len(m), 'matches')
-Found 4 matches
+print ('Found', len(m), 'matches') # Found 4 matches
 ```
 
 How about 'n' followed by any character?
 
-```
->>> import re
->>> source = 'Young Frankenstein'
->>> m = re.findall('n.', source)
->>> m
-['ng', 'nk', 'ns']
+```python
+import re
+source = 'Young Frankenstein'
+m = re.findall('n.', source)
+m # ['ng', 'nk', 'ns']
 ```
 Notice that it did not match that final 'n'. We need to say that the character after 'n' is optional, with ?:
 
-```
->>> import re
->>> source = 'Young Frankenstein'
->>> m = re.findall('n.?', source)
->>> m
-['ng', 'nk', 'ns', 'n']
+```python
+import re
+source = 'Young Frankenstein'
+m = re.findall('n.?', source)
+m # ['ng', 'nk', 'ns', 'n']
 ```
 ### Split at Matches with split()
 
 The next example shows you how to split a string into a list by a pattern rather than a simple string (as the normal string split() method would do):
 
-```
->>> import re
->>> source = 'Young Frankenstein'
->>> m = re.split('n', source)
->>> m # split returns a list
-['You', 'g Fra', 'ke', 'stei', '']
+```python
+import re
+source = 'Young Frankenstein'
+m = re.split('n', source)
+m # ['You', 'g Fra', 'ke', 'stei', '']
 ```
 ### Replace at Matches with sub()
 
 This is like the string replace() method, but for patterns rather than literal strings:
 
-```
->>> import re
->>> source = 'Young Frankenstein'
->>> m = re.sub('n', '?', source)
->>> m # sub returns a string
-'You?g Fra?ke?stei?'
+```python
+import re
+source = 'Young Frankenstein'
+m = re.sub('n', '?', source)
+m # 'You?g Fra?ke?stei?'
 ```
 ### Patterns: Special Characters
 
@@ -733,47 +716,46 @@ With these expressions (match(), search(), findall(), and sub()) under your belt
 
 You’ve seen the basics:
 
-- Literal matches with any nonspecial characters
-- Any single character except \n with.
-- Any number of the preceding character (including zero) with *
-- Optional (zero or one) of the preceding character with?
+- Literal은 모든 비특수문자와 일치
+- \n를 제외한 단일문자와 일치: .
+- 이전문자 0회이상 일치: *
+- 이전문자 0,1회 일치: ?
 
 First, special characters are shown in Table 12-2.
 
 Table 12-2. Special characters
 
-```
-Pattern Matches
-\d A single digit
-\D A single nondigit
-\w An alphanumeric character
-\W A non-alphanumeric character
-\s A whitespace character
-\S A nonwhitespace character
-\b A word boundary (between a \w and a \W, in either order)
-\B A nonword boundary
-```
+
+| Pattern | Matches |
+|:--------|:--------|
+| \d | [0-9] | 
+| \D | [^0-9] |
+| \w | [a-zA-Z_] |
+| \W | [^a-zA-Z_] |
+| \s | whitespace character |
+| \S | nonwhitespace character |
+| \b | A word boundary (between a \w and a \W, in either order) |
+| \B | A nonword boundary |
+
+
 The Python string module has predefined string constants that we can use for testing. Let’s use printable, which contains 100 printable ASCII characters, including letters in both cases, digits, space characters, and punctuation:
 
-```
->>> import string
->>> printable = string.printable
->>> len(printable)
-100
->>> printable[0:50]
-'0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMN'
->>> printable[50:]
-'OPQRSTUVWXYZ!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~ \t\n\r\x0b\x0c'
+```python
+import string
+printable = string.printable
+print(len(printable)) # 100
+printable[0:50] # '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMN'
+printable[50:] # 'OPQRSTUVWXYZ!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~ \t\n\r\x0b\x0c'
 ```
 Which characters in printable are digits?
 
-```
+```python
 >>> re.findall('\d', printable)
 ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 ```
 Which characters are digits, letters, or an underscore?
 
-```
+```python
 >>> re.findall('\w', printable)
 ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b',
 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',
@@ -785,13 +767,13 @@ Which characters are digits, letters, or an underscore?
 
 Which are spaces?
 
-```
+```python
 >>> re.findall('\s', printable)
 [' ', '\t', '\n', '\r', '\x0b', '\x0c']
 ```
 In order, those were: plain old space, tab, newline, carriage return, vertical tab, and form feed.
 
-Regular expressions are not confined to ASCII. A \d will match whatever Unicode calls a digit, not just ASCII characters '0' through '9'. Let’s add two non-ASCII lowercase letters from FileFormat.info:
+Regular expressions are not confined to ASCII. A \d will match whatever Unicode calls a digit, not just ASCII characters '0' through '9'. Let’s add two non-ASCII lowercase letters from [FileFormat.info](https://www.fileformat.info/info/unicode/category/Ll/list.htm):
 
 In this test, we’ll throw in the following:
 
@@ -817,126 +799,124 @@ In the table, expr and the other italicized words mean any valid regular express
 
 Table 12-3. Pattern specifiers
 
-```
-Pattern Matches
-abc Literal abc
-( expr ) expr
-expr1 | expr2 expr1 or expr2
-```
-. Any character except \n
-^ Start of source string
-$ End of source string
-prev? Zero or one prev
-prev * Zero or more prev, as many as possible
-prev *? Zero or more prev, as few as possible
-prev + One or more prev, as many as possible
+| Pattern | Matches |
+|:--------|:--------|
+| abc | Literal abc |
+| ( expr ) | expr |
+| expr1 `|` expr2 | expr1 or expr2 |
+| . | Any character except \n |
+| ^ | Start of source string |
+| $ | End of source string |
+| prev? | Zero or one prev |
+| prev * | Zero or more prev, as many as possible |
+| prev *? | Zero or more prev, as few as possible |
+| prev + | One or more prev, as many as possible |
+| prev +? | One or more prev, as few as possible |
+| prev { m } | m consecutive prev |
+| prev { m, n } | m to n consecutive prev, as many as possible |
+| prev { m, n }? | m to n consecutive prev, as few as possible |
+| [ abc ] | a or b or c (same as a`|`b`|`c) |
+| [^ abc ] | not (a or b or c) |
+| prev (?= next ) | prev if followed by next |
+| prev (?! next ) | prev if not followed by next |
+| (?<= prev ) next | next if preceded by prev |
+| (?<! prev ) next | next if not preceded by prev |
 
-```
-Pattern Matches
-prev +? One or more prev, as few as possible
-prev { m } m consecutive prev
-prev { m, n } m to n consecutive prev, as many as possible
-prev { m, n }? m to n consecutive prev, as few as possible
-[ abc ] a or b or c (same as a|b|c)
-[^ abc ] not (a or b or c)
-prev (?= next ) prev if followed by next
-prev (?! next ) prev if not followed by next
-(?<= prev ) next next if preceded by prev
-(?<! prev ) next next if not preceded by prev
-```
 Your eyes might cross permanently when trying to read these examples. First, let’s define our source string:
 
-```
+```python
 >>> source = '''I wish I may, I wish I might
 ... Have a dish of fish tonight.'''
 ```
+
 Now we apply different regular expression pattern strings to try to match something in the source string.
 
-```
-In the following examples, I use plain quoted strings for the patterns. A little later in this section I show how a raw pattern string (r before the initial quote) helps avoid some conflicts between Python’s normal string escapes and regular expression ones. So, to be safest, the first argument in all the following examples should actually be a raw string.
-```
+{: .note}
+> In the following examples, I use plain quoted strings for the patterns. A little later in this section I show how a `raw pattern string` (r before the initial quote) helps avoid some conflicts between Python’s normal string escapes and regular expression ones. So, to be safest, the first argument in all the following examples should actually be a raw string.
+
+
 First, find wish anywhere:
 
-```
+```python
 >>> re.findall('wish', source)
 ['wish', 'wish']
 ```
 Next, find wish or fish anywhere:
 
-```
+```python
 >>> re.findall('wish|fish', source)
 ['wish', 'wish', 'fish']
 ```
 Find wish at the beginning:
 
-```
+```python
 >>> re.findall('^wish', source)
 []
 ```
 Find I wish at the beginning:
 
-```
+```python
 >>> re.findall('^I wish', source)
 ['I wish']
 ```
 
 Find fish at the end:
 
-```
+```python
 >>> re.findall('fish$', source)
 []
 ```
 Finally, find fish tonight. at the end:
 
-```
+```python
 >>> re.findall('fish tonight.$', source)
 ['fish tonight.']
 ```
 The characters ^ and $ are called anchors: ^ anchors the search to the beginning of the search string, and $ anchors it to the end. .$ matches any character at the end of the line, including a period, so that worked. To be more precise, we should escape the dot to match it literally:
 
-```
+```python
 >>> re.findall('fish tonight\.$', source)
 ['fish tonight.']
 ```
 Begin by finding w or f followed by ish:
 
-```
+```python
 >>> re.findall('[wf]ish', source)
 ['wish', 'wish', 'fish']
 ```
 Find one or more runs of w, s, or h:
 
-```
+```python
 >>> re.findall('[wsh]+', source)
 ['w', 'sh', 'w', 'sh', 'h', 'sh', 'sh', 'h']
 ```
 Find ght followed by a non-alphanumeric:
 
-```
+```python
 >>> re.findall('ght\W', source)
 ['ght\n', 'ght.']
 ```
 Find I followed by wish:
 
-```
+```python
 >>> re.findall('I (?=wish)', source)
 ['I ', 'I ']
 ```
 And last, wish preceded by I:
 
-```
+```python
 >>> re.findall('(?<=I) wish', source)
 [' wish', ' wish']
 ```
 I mentioned earlier that there are a few cases in which the regular expression pattern rules conflict with the Python string rules. The following pattern should match any word that begins with fish:
 
-```
+```python
 >>> re.findall(' \b fish', source)
 []
 ```
 Why doesn’t it? As is discussed in Chapter 5, Python employs a few special escape characters for strings. For example, \b means backspace in strings, but in the minilanguage of regular expressions it means the beginning of a word. Avoid the accidental use of escape characters by using Python’s raw strings when you define your regular expression string. Always put an r character before your regular expression pattern string, and Python escape characters will be disabled, as demonstrated here:
 
-```
+```python
 >>> re.findall(r'\bfish', source)
 ['fish']
 ```
@@ -944,7 +924,7 @@ Why doesn’t it? As is discussed in Chapter 5, Python employs a few special esc
 
 When using match() or search(), all matches are returned from the result object m as m.group(). If you enclose a pattern in parentheses, the match will be saved to its own group, and a tuple of them will be available as m.groups(), as shown here:
 
-```
+```python
 >>> m = re.search(r'(. dish\b).*(\bfish)', source)
 >>> m.group()
 'a dish of fish'
@@ -953,7 +933,7 @@ When using match() or search(), all matches are returned from the result object 
 ```
 If you use this pattern (?P< _name_ > _expr_ ), it will match _expr_ , saving the match in group _name_ :
 
-```
+```python
 >>> m = re.search(r'(?P<DISH>. dish\b).*(?P<FISH>\bfish)', source)
 >>> m.group()
 'a dish of fish'
@@ -972,13 +952,14 @@ Text data can be challenging, but binary data can be, well, interesting. You nee
 
 Python 3 introduced the following sequences of eight-bit integers, with possible values from 0 to 255, in two types:
 
+```
 - bytes is immutable, like a tuple of bytes
 - bytearray is mutable, like a list of bytes
-
+```
 
 Beginning with a list called blist, this next example creates a bytes variable called the_bytes and a bytearray variable called the_byte_array:
 
-```
+```python
 >>> blist = [1, 2, 3, 255]
 >>> the_bytes = bytes(blist)
 >>> the_bytes
@@ -987,16 +968,16 @@ b'\x01\x02\x03\xff'
 >>> the_byte_array
 bytearray(b'\x01\x02\x03\xff')
 ```
-```
+
 The representation of a bytes value begins with a b and a quote character, followed by hex sequences such as \x02 or ASCII characters, and ends with a matching quote character. Python converts the hex sequences or ASCII characters to little integers, but shows byte values that are also valid ASCII encodings as ASCII characters:
->>> b' \x61 '
-b'a'
->>> b' \x01 abc \xff '
-b'\x01abc\xff'
+
+```python
+print(b' \x61 ') # b'a'
+print(b' \x01 abc \xff ') # b'\x01abc\xff'
 ```
 This next example demonstrates that you can’t change a bytes variable:
 
-```
+```python
 >>> blist = [1, 2, 3, 255]
 >>> the_bytes = bytes(blist)
 >>> the_bytes[1] = 127
@@ -1006,7 +987,7 @@ TypeError: 'bytes' object does not support item assignment
 ```
 But a bytearray variable is mellow and mutable:
 
-```
+```python
 >>> blist = [1, 2, 3, 255]
 >>> the_byte_array = bytearray(blist)
 >>> the_byte_array
@@ -1017,13 +998,13 @@ bytearray(b'\x01\x7f\x03\xff')
 ```
 Each of these would create a 256-element result, with values from 0 to 255:
 
-```
+```python
 >>> the_bytes = bytes(range(0, 256))
 >>> the_byte_array = bytearray(range(0, 256))
 ```
 When printing bytes or bytearray data, Python uses \x _xx_ for nonprintable bytes and their ASCII equivalents for printable ones (plus some common escape characters, such as \n instead of \x0a). Here’s the printed representation of the_bytes (manually reformatted to show 16 bytes per line):
 
-```
+```python
 >>> the_bytes
 b'\x00\x01\x02\x03\x04\x05\x06\x07\x08\t\n\x0b\x0c\r\x0e\x0f
 \x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1a\x1b\x1c\x1d\x1e\x1f
@@ -1046,7 +1027,7 @@ This can be confusing, because they’re bytes (teeny integers), not characters.
 
 ### Convert Binary Data with struct
 
-As you’ve seen, Python has many tools for manipulating text. Tools for binary data are much less prevalent. The standard library contains the struct module, which handles data similar to structs in C and C++. Using struct, you can convert binary data to and from Python data structures.
+As you’ve seen, Python has many tools for manipulating text. Tools for binary data are much less prevalent. The standard library contains the struct module, which handles data similar to structs in C and C++. Using `struct`, you can convert binary data to and from Python data structures.
 
 Let’s see how this works with data from a PNG file—a common image format that you’ll see along with GIF and JPEG files. We’ll write a small program that extracts the width and height of an image from some PNG data.
 
@@ -1057,102 +1038,95 @@ Figure 12-1. The O’Reilly tarsier
 The PNG file for this image is available on Wikipedia. I don’t show how to read files until Chapter 14, so I downloaded this file, wrote a little program to print its values as bytes, and just typed the values of the first 30 bytes into a Python bytes variable called data for the example that follows. (The PNG format specification says that the width and height are stored within the first 24 bytes, so we don’t need more than that for now.)
 
 
-```
->>> import struct
->>> valid_png_header = b' \x89 PNG \r\n\x1a\n '
->>> data = b' \x89 PNG \r\n\x1a\n\x00\x00\x00\r IHDR' + \
-... b' \x00\x00\x00\x9a\x00\x00\x00\x8d\x08\x02\x00\x00\x00\xc0 '
->>> if data[:8] == valid_png_header:
-... width, height = struct.unpack('>LL', data[16:24])
-... print ('Valid PNG, width', width, 'height', height)
-... else :
-... print ('Not a valid PNG')
-...
-Valid PNG, width 154 height 141
+```python
+import struct
+
+with open('아이유.png','rb') as f:
+    data = f.read()[:100]
+    print(data)
+
+valid_png_header = b'\x89PNG\r\n\x1a\n'
+
+if data[:8] == valid_png_header:
+    width, height = struct.unpack('>LL', data[16:24])
+    print ('Valid PNG, width', width, 'height', height)
+else :
+    print ('Not a valid PNG')
 ```
 Here’s what this code does:
 
-- data contains the first 30 bytes from the PNG file. To fit on the page, I joined two byte strings with + and the continuation character (\).
-- valid_png_header contains the eight-byte sequence that marks the start of a valid PNG file.
 - width is extracted from bytes 16–19, and height from bytes 20–23.
 
-The >LL is the format string that instructs unpack() how to interpret its input byte sequences and assemble them into Python data types. Here’s the breakdown:
+The >LL is the format string that instructs `unpack()` how to interpret its input byte sequences and assemble them into Python data types. Here’s the breakdown:
 
-- The > means that integers are stored in big-endian format.
-- Each L specifies a four-byte unsigned long integer.
+- The `>` means that integers are stored in `**big-endian format**`.
+- Each `L` specifies a four-byte `unsigned long integer`.
 
 You can examine each four-byte value directly:
 
-```
->>> data[16:20]
-b'\x00\x00\x00\x9a'
->>> data[20:24]0x9a
-b'\x00\x00\x00\x8d'
+```python
+print(data[16:20]) # b'\x00\x00\x00\x9a'
+print(data[20:24]) # b'\x00\x00\x00\x8d'
 ```
 Big-endian integers have the most significant bytes to the left. Because the width and height are each less than 255, they fit into the last byte of each sequence. You can verify that these hex values match the expected decimal values:
 
-```
+```python
 >>> 0x9a
 154
 >>> 0x8d
 141
 ```
-When you want to go in the other direction and convert Python data to bytes, use the struct pack() function:
+When you want to go in the other direction and convert Python data to bytes, use the struct `pack()` function:
 
+```python
+print(struct.pack('>L', 154)) # b'\x00\x00\x00\x9a'
+print(struct.pack('>L', 141)) # b'\x00\x00\x00\x8d'
 ```
->>> import struct
->>> struct.pack('>L', 154)
-b'\x00\x00\x00\x9a'
->>> struct.pack('>L', 141)
-b'\x00\x00\x00\x8d'
-```
-Tables 12-4 and 12-5 show the format specifiers for pack() and unpack().
+Tables 12-4 and 12-5 show the format specifiers for `pack()` and `unpack()`.
 
 The endian specifiers go first in the format string.
 
-Table 12-4. Endian specifiers
+Table 12-4. `Endian specifiers`
 
-```
-Specifier Byte order
-< Little endian
-> Big endian
-```
-Table 12-5. Format specifiers
+| Specifier | Byte order |
+|:----------|:-----------|
+| < | Little endian |
+| > | Big endian |
 
-```
-Specifier Description Bytes
-x Skip a byte 1
-b Signed byte^1
-B Unsigned byte 1
-h Signed short integer^2
-H Unsigned short integer^2
-i Signed integer 4
-I Unsigned integer^4
-l Signed long integer 4
-L Unsigned long integer^4
-Q Unsigned long long integer 8
-f Single-precision float^4
-d Double-precision float 8
-p count and characters 1 + count
-s Characters count
-```
-The type specifiers follow the endian character. Any specifier may be preceded by a number that indicates the _count_ ; 5B is the same as BBBBB.
+Table 12-5. `Format specifiers`
 
-You can use a _count_ prefix instead of >LL:
+| Specifier | Description | Bytes |
+|:----------|:------------|:------|
+| x | Skip a byte | 1 |
+| b | Signed byte | 1 |
+| B | Unsigned byte | 1 |
+| h | Signed short integer | 2 |
+| H | Unsigned short integer | 2 |
+| i | Signed integer | 4 |
+| I | Unsigned integer | 4 |
+| l | Signed long integer | 4 |
+| L | Unsigned long integer | 4 |
+| Q | Unsigned long long integer | 8 |
+| f | Single-precision float | 4 |
+| d | Double-precision float | 8 | 
+| p | count and characters | 1 + count |
+| s | Characters | count |
 
-```
+The type specifiers follow the endian character. Any specifier may be preceded by a number that indicates the `count` ; 5B is the same as BBBBB.
+
+You can use a `count` prefix instead of >LL:
+
+```python
 >>> struct.unpack('>2L', data[16:24])
 (154, 141)
 ```
 We used the slice data[16:24] to grab the interesting bytes directly. We could also use the x specifier to skip the uninteresting parts:
 
-```
+```python
 >>> struct.unpack('>16x2L6x', data)
 (154, 141)
 ```
-This means:
-
-
+This means:   
 - Use big-endian integer format (>)
 - Skip 16 bytes (16x)
 - Read eight bytes—two unsigned long integers (2L)
@@ -1162,20 +1136,22 @@ This means:
 
 Some third-party open source packages offer the following, more-declarative ways of defining and extracting binary data:
 
+```
 - bitstring
 - construct
 - hachoir
 - binio
 - kaitai struct
+```
 
 Appendix B has details on how to download and install external packages such as these. For the next example, you need to install construct. Here’s all you need to do:
 
-```
+```python
 $ pip install construct
 ```
 Here’s how to extract the PNG dimensions from our data bytestring by using construct:
 
-```
+```python
 >>> from construct import Struct, Magic, UBInt32, Const, String
 >>> # adapted from code at https://github.com/construct
 >>> fmt = Struct('png',
@@ -1202,7 +1178,7 @@ height = 141
 
 The standard binascii module has functions to convert between binary data and various string representations: hex (base 16), base 64, uuencoded, and others. For example, in the next snippet, let’s print that eight-byte PNG header as a sequence of hex values, instead of the mixture of ASCII and \x xx escapes that Python uses to display bytes variables:
 
-```
+```python
 >>> import binascii
 >>> valid_png_header = b' \x89 PNG \r\n\x1a\n '
 >>> print (binascii.hexlify(valid_png_header))
@@ -1210,7 +1186,7 @@ b'89504e470d0a1a0a'
 ```
 Hey, this thing works backward, too:
 
-```
+```python
 >>> print (binascii.unhexlify(b'89504e470d0a1a0a'))
 b'\x89PNG\r\n\x1a\n'
 ```
@@ -1222,7 +1198,7 @@ Table 12-6 summarizes them and includes examples with the integer variables x (d
 
 Table 12-6. Bit-level integer operators
 
-```
+```python
 Operator Description Example Decimal result Binary result
 & And x & y 1 0b0001
 | Or x | y 5 0b0101

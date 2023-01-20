@@ -15,43 +15,7 @@ nav_order: 14
 1. TOC
 {:toc}
 
-- 14. Files and Directories.
-   - File Input and Output
-      - Create or Open with open()
-      - Write a Text File with print()
-      - Write a Text File with write()
-      - Read a Text File with read(), readline(), or readlines()
-      - Write a Binary File with write()
-      - Read a Binary File with read()
-      - Close Files Automatically by Using with
-      - Change Position with seek()
-   - Memory Mapping
-   - File Operations
-      - Check Existence with exists()
-      - Check Type with isfile()
-      - Copy with copy()
-      - Change Name with rename()
-      - Link with link() or symlink()
-      - Change Permissions with chmod()
-      - Change Ownership with chown()
-      - Delete a File with remove()
-   - Directory Operations
-      - Create with mkdir()
-      - Delete with rmdir()
-      - List Contents with listdir()
-      - Change Current Directory with chdir()
-      - List Matching Files with glob()
-   - Pathnames
-      - Get a Pathname with abspath()
-      - Get a symlink Pathname with realpath()
-      - Build a Pathname with os.path.join()
-      - Use pathlib
-   - BytesIO and StringIO
-   - Coming Up
-   - Things to Do
-
-
-When you first start programming, you hear some words over and over but aren’t
+<!-- When you first start programming, you hear some words over and over but aren’t
 
 sure whether they have a specific technical meaning or are just handwaving. The
 
@@ -69,9 +33,9 @@ Many filesystems are hierarchical, and often referred to as being like a tree. R
 
 ces don’t tend to have trees in them, and the folder analogy only works if you visual‐
 
-ize subfolders all the way down.
+ize subfolders all the way down. -->
 
-## File Input and Output
+<!-- ## File Input and Output
 
 The simplest kind of persistence is a plain old file, sometimes called a flat file. You
 
@@ -79,7 +43,7 @@ read from a file into memory and write from memory to a file. Python makes these
 
 jobs easy. As with many languages, its file operations were largely modeled on the
 
-familiar and popular Unix equivalents.
+familiar and popular Unix equivalents. -->
 
 ### Create or Open with open()
 
@@ -90,34 +54,35 @@ You need to call the open function before you do the following:
 - Append to an existing file
 - Overwrite an existing file
 
-```
+```python
 fileobj = open( filename , mode )
 ```
 Here’s a brief explanation of the pieces of this call:
 
-- _fileobj_ is the file object returned by open()
-- _filename_ is the string name of the file
-- _mode_ is a string indicating the file’s type and what you want to do with it
+- `fileobj` is the file object returned by open()
+- `filename` is the string name of the file
+- `mode` is a string indicating the file’s type and what you want to do with it
 
-The first letter of _mode_ indicates the operation:
+The first letter of `mode` indicates the operation:
 
-- r means read.
-- w means write. If the file doesn’t exist, it’s created. If the file does exist, it’s overwritten.
-- x means write, but only if the file does not already exist.
-- a means append (write after the end) if the file exists.
+- `r` means read.
+- `w` means write. If the file doesn’t exist, it’s created. If the file does exist, it’s overwritten.
+- `x` means write, but only if the file does not already exist.
+- `a` means append (write after the end) if the file exists.
 
-The second letter of _mode_ is the file’s type:
+The second letter of mode is the file’s type:
 
-- t (or nothing) means text.
-- b means binary.
+- `t` (or `nothing`) means text.
+- `b` means binary.
 
-After opening the file, you call functions to read or write data; these will be shown in the examples that follow.
+<!-- After opening the file, you call functions to read or write data; these will be shown in the examples that follow.
 
 Last, you need to close the file to ensure that any writes complete, and that memory is freed. Later, you’ll see how to use with to automate this for you.
 
 This program opens a file called oops.txt and closes it without writing anything. This would create an empty file:
+ -->
 
-```
+```python
 >>> fout = open('oops.txt', 'wt')
 >>> fout.close()
 ```
@@ -125,20 +90,20 @@ This program opens a file called oops.txt and closes it without writing anything
 
 Let’s re-create oops.txt, but now write a line to it and then close it:
 
-```
+```python
 >>> fout = open('oops.txt', 'wt')
 >>> print ('Oops, I created a file.', file=fout)
 >>> fout.close()
 ```
 
 
-We created an empty oops.txt file in the previous section, so this just overwrites it.
+<!-- We created an empty oops.txt file in the previous section, so this just overwrites it.
 
 We used the file argument to print. Without it, print writes to standard output,
 
 which is your terminal (unless you’ve told your shell program to redirect output to a
 
-file with > or piped it to another program with |).
+file with > or piped it to another program with |). -->
 
 ### Write a Text File with write()
 
@@ -146,7 +111,7 @@ We just used print to write a line to a file. We can also use write.
 
 For our multiline data source, let’s use this limerick about special relativity:
 
-```
+```python
 >>> poem = '''There was a young lady named Bright,
 ... Whose speed was far faster than light;
 ... She started one day
@@ -157,7 +122,7 @@ For our multiline data source, let’s use this limerick about special relativit
 ```
 The following code writes the entire poem to the file 'relativity' in one call:
 
-```
+```python
 >>> fout = open('relativity', 'wt')
 >>> fout.write(poem)
 150
@@ -165,7 +130,7 @@ The following code writes the entire poem to the file 'relativity' in one call:
 ```
 The write function returns the number of bytes written. It does not add any spaces or newlines, as print does. As before, you can also print a multiline string to a text file:
 
-```
+```python
 >>> fout = open('relativity', 'wt')
 >>> print (poem, file=fout)
 >>> fout.close()
@@ -178,23 +143,23 @@ print함수와 write함수의 차이는 print함수의 sep,end 인수에서 기�
 
 We’ll use empty strings to replace these defaults:
 
-```
+```python
 >>> fout = open('relativity', 'wt')
 >>> print (poem, file=fout, sep='', end='')
 >>> fout.close()
 ```
 큰 파일 나눠 쓰기
 
-```
+```python
 >>> fout = open('relativity', 'wt')
 >>> size = len(poem)
 >>> offset = 0
 >>> chunk = 100
 >>> while True:
-... if offset > size:
-... break
-... fout.write(poem[offset:offset+chunk])
-... offset += chunk
+...     if offset > size:
+...         break
+...     fout.write(poem[offset:offset+chunk])
+...     offset += chunk
 
 100
 50
@@ -205,7 +170,8 @@ We’ll use empty strings to replace these defaults:
 
 If the relativity file is precious to us, let’s see whether using mode x really protects us from overwriting it: -->
 덮어쓰기 방지
-```
+
+```python
 >>> fout = open('relativity', 'xt')
 Traceback (most recent call last):
 File "<stdin>", line 1, in <module>
@@ -213,31 +179,26 @@ FileExistsError: [Errno 17] File exists: 'relativity'
 ```
 You can use this with an exception handler:
 
-```
+```python
 >>> try :
-... fout = open('relativity', 'xt')]
-... fout.write('stomp stomp stomp')
+...     fout = open('relativity', 'xt')
+...     fout.write('stomp stomp stomp')
 ... except FileExistsError:
-... print ('relativity already exists!. That was a close one.')
+...     print ('relativity already exists!. That was a close one.')
 ```
-```
-relativity already exists!. That was a close one.
-```
+
 ### Read a Text File with read(), readline(), or readlines()
 
 You can call read() with no arguments to slurp up the entire file at once, as shown in the example that follows (be careful when doing this with large files; a gigabyte file will consume a gigabyte of memory):
 
-```
+```python
 >>> fin = open('relativity', 'rt' )
 >>> poem = fin.read()
 >>> fin.close()
-```
-
-```
 >>> len(poem)
 150
 ```
-You can provide a maximum character count to limit how much read() returns at one time. Let’s read 100 characters at a time and append each chunk to a poem string to rebuild the original:
+<!-- You can provide a maximum character count to limit how much read() returns at one time. Let’s read 100 characters at a time and append each chunk to a poem string to rebuild the original:
 
 ```
 >>> poem = ''
@@ -253,53 +214,48 @@ You can provide a maximum character count to limit how much read() returns at on
 >>> len(poem)
 150
 ```
-After you’ve read all the way to the end, further calls to read() will return an empty string (''), which is treated as False in if not fragment. This breaks out of the while True loop.
+After you’ve read all the way to the end, further calls to read() will return an empty string (''), which is treated as False in if not fragment. This breaks out of the while True loop. -->
 
 You can also read the file a line at a time by using readline(). In this next example, we append each line to the poem string to rebuild the original:
 
-```
->>> poem = ''
->>> fin = open('relativity', 'rt' )
->>> while True:
-... line = fin.readline()
-... if not line:
-... break
-... poem += line
-...
->>> fin.close()
->>> len(poem)
-150
+```python
+poem = ''
+fin = open('relativity', 'rt' )
+while True:
+    line = fin.readline()
+    if not line:
+        break
+        poem += line
+
+fin.close()
+print(len(poem)) # 150
 ```
 For a text file, even a blank line has a length of one (the newline character), and is evaluated as True. When the file has been read, readline() (like read()) also returns an empty string, which is also evaluated as False.
 
 The easiest way to read a text file is by using an iterator. This returns one line at a time. It’s similar to the previous example but with less code:
 
-```
+```python
 >>> poem = ''
 >>> fin = open('relativity', 'rt' )
 >>> for line in fin:
-... poem += line
+...     poem += line
 ...
 >>> fin.close()
-```
-
-```
 >>> len(poem)
 150
 ```
 All of the preceding examples eventually built the single string poem.    
 The `read lines()` call reads `a line` `at a time`, and returns `a list of one-line strings`:
 
-```
+```python
 >>> fin = open('relativity', 'rt' )
 >>> lines = fin.readlines()         #줄단위 list반환
 >>> fin.close()
 >>> print (len(lines), 'lines read')
 5 lines read
 >>> for line in lines:
-... print (line, end='')
-```
-```
+...     print (line, end='')
+
 There was a young lady named Bright,
 Whose speed was far faster than light;
 She started one day
@@ -314,14 +270,14 @@ If you include a 'b' in the mode string, the file is opened in binary mode. In t
 
 We don’t have a binary poem lying around, so we’ll just generate the 256 byte values from 0 to 255:
 
-```
+```python
 >>> bdata = bytes(range(0, 256))
 >>> len(bdata)
 256
 ```
 Open the file for writing in binary mode and write all the data at once:
 
-```
+```python
 >>> fout = open('bfile', 'wb')
 >>> fout.write(bdata)
 256
@@ -331,21 +287,17 @@ Again, write() returns the number of bytes written.
 
 As with text, you can write binary data in chunks:
 
-```
+```python
 >>> fout = open('bfile', 'wb')
 >>> size = len(bdata)
 >>> offset = 0
 >>> chunk = 100
 >>> while True:
-... if offset > size:
-```
-
-```
-... break
+...     if offset > size:
+...         break
 ... fout.write(bdata[offset:offset+chunk])
 ... offset += chunk
-```
-```
+
 100
 100
 56
@@ -355,7 +307,7 @@ As with text, you can write binary data in chunks:
 
 This one is simple; all you need to do is just open with 'rb':
 
-```
+```python
 >>> fin = open('bfile', 'rb')
 >>> bdata = fin.read()
 >>> len(bdata)
@@ -364,36 +316,28 @@ This one is simple; all you need to do is just open with 'rb':
 ```
 ### Close Files Automatically by Using with
 
-If you forget to close a file that you’ve opened, it will be closed by Python after it’s no
-
-longer referenced. This means that if you open a file within a function and don’t close
-
-it explicitly, it will be closed automatically when the function ends. But you might
-
-have opened the file in a long-running function or the main section of the program.
+If you forget to close a file that you’ve opened, it will be closed by Python after it’s no longer referenced. This means that if you open a file within a function and don’t close it explicitly, it will be closed automatically when the function ends. But you might have opened the file in a long-running function or the main section of the program.
 
 The file should be closed to force any remaining writes to be completed.
 
-Python has context managers to clean up things such as open files. You use the form
-```
-with _expression_ as _variable_ :
-```
+Python has context managers to clean up things such as open files. You use the form 
 
-```
+with _expression_ as _variable_ :
+
+
+```python
 >>> with open('relativity', 'wt') as fout:
 ... fout.write(poem)
 ```
-That’s it. After the block of code under the context manager (in this case, one line)
-
-completes (normally or by a raised exception), the file is closed automatically.
+That’s it. After the block of code under the context manager (in this case, one line) completes (normally or by a raised exception), the file is closed automatically.
 
 ### Change Position with seek()
 
 As you read and write, Python keeps track of where you are in the file. The `tell()` function returns your `current offset from the beginning of the file`, in bytes. The `seek()` function lets you `jump to another byte offset` in the file. This means that you don’t have to read every byte in a file to read the last one; you can seek() to the last one and just read one byte.
 
-For this example, use the 256-byte binary file 'bfile' that you wrote earlier:
+<!-- For this example, use the 256-byte binary file 'bfile' that you wrote earlier:
 
-```
+```python
 >>> fin = open('bfile', 'rb')
 >>> fin.tell()
 0
@@ -401,13 +345,13 @@ For this example, use the 256-byte binary file 'bfile' that you wrote earlier:
 
 Use seek() to jump to one byte before the end of the file:
 
-```
+```python
 >>> fin.seek(255)
 255
 ```
 Read until the end of the file:
 
-```
+```python
 >>> bdata = fin.read()
 >>> len(bdata)
 1
@@ -424,7 +368,7 @@ You can call seek() with a second argument: seek( _offset_ , _origin_ ):
 
 These values are also defined in the standard os module:
 
-```
+```python
 >>> import os
 >>> os.SEEK_SET
 0
@@ -435,12 +379,12 @@ These values are also defined in the standard os module:
 ```
 So, we could have read the last byte in different ways:
 
-```
+```python
 >>> fin = open('bfile', 'rb')
 ```
 One byte before the end of the file:
 
-```
+```python
 >>> fin.seek(-1, 2)
 255
 >>> fin.tell()
@@ -448,7 +392,7 @@ One byte before the end of the file:
 ```
 Read until the end of the file:
 
-```
+```python
 >>> bdata = fin.read()
 >>> len(bdata)
 1
@@ -462,12 +406,12 @@ show that they both report the same offset.
 ```
 Here’s an example of seeking from the current position in the file:
 
-```
+```python
 >>> fin = open('bfile', 'rb')
 ```
 This next example ends up two bytes before the end of the file:
 
-```
+```python
 >>> fin.seek(254, 0)
 254
 >>> fin.tell()
@@ -475,7 +419,7 @@ This next example ends up two bytes before the end of the file:
 ```
 Now go forward one byte:
 
-```
+```python
 >>> fin.seek(1, 1)
 255
 >>> fin.tell()
@@ -483,7 +427,7 @@ Now go forward one byte:
 ```
 Finally, read until the end of the file:
 
-```
+```python
 >>> bdata = fin.read()
 >>> len(bdata)
 1
@@ -496,7 +440,36 @@ unless the file is ASCII (one byte per character), you would have a hard time ca
 
 ing offsets. These would depend on the text encoding, and the most popular encod‐
 
-ing (UTF-8) uses varying numbers of bytes per character.
+ing (UTF-8) uses varying numbers of bytes per character. -->
+
+{: .note}
+> 읽기 위치 이동/찾기는 file 객체 read()메서드 전에 적용해야 한다.
+
+```python
+bdata = bytes(range(256))
+fw = open('bfile','wb')
+fw.write(bdata)
+fw.close()
+
+fin = open('bfile','rb')
+print(fin.tell())         # 파일 open 후 위치 반환 - 0
+position = fin.seek(255)  # 255위치로 이동
+print(position)           # 255
+
+result = fin.read()
+print(len(result))     # 1
+print(result[0])       # 255
+
+# seek(offset지정, 카운터시작위치지정) : 카운터시작위치지정- 0(기본):시작위치 / 1:현재위치 / 2:마지막위치
+fin = open('bfile','rb')
+position = fin.seek(-1,2)  # 마지막에서 -1 위치
+print(position)            # 255
+position = fin.seek(-1,1)  # 현재위치에서 -1 위치
+print(position)            # 254
+
+print(fin.read())          # b'\xfe\xff'
+'''
+```
 
 ## Memory Mapping
 
@@ -508,24 +481,16 @@ the [documentation](https://docs.python.org/3.7/library/mmap.html) and some [exa
 
 ## File Operations
 
-Python, like many other languages, patterned its file operations after Unix. Some
-
-functions, such as chown() and chmod(), have the same names, but there are a few
-
-new ones.
+Python, like many other languages, patterned its file operations after Unix. Some functions, such as chown() and chmod(), have the same names, but there are a few new ones.
 
 
-I’ll first show how Python handles these tasks with functions from the os.path mod‐
-
-ule and then with the newer pathlib module.
+I’ll first show how Python handles these tasks with functions from the `os.path` module and then with the newer `pathlib` module.
 
 ### Check Existence with exists()
 
-To verify whether the file or directory is really there or you just imagined it, you can
+To verify whether the file or directory is really there or you just imagined it, you can provide exists(), with a relative or absolute pathname, as demonstrated here:
 
-provide exists(), with a relative or absolute pathname, as demonstrated here:
-
-```
+```python
 >>> import os
 >>> os.path.exists('oops.txt')
 True
@@ -548,14 +513,14 @@ The first function we’ll look at, isfile, asks a simple question: is it a plai
 
 abiding file?
 
-```
+```python
 >>> name = 'oops.txt'
 >>> os.path.isfile(name)
 True
 ```
 Here’s how you determine a directory:
 
-```
+```python
 >>> os.path.isdir(name)
 False
 ```
@@ -565,7 +530,7 @@ the parent directory. These always exist, so a statement such as the following w
 
 always report True:
 
-```
+```python
 >>> os.path.isdir('.')
 True
 ```
@@ -577,12 +542,12 @@ mines whether its argument is an absolute pathname. The argument doesn’t need 
 
 be the name of a real file:
 
-```
+```python
 >>> os.path.isabs(name)
 False
 ```
 
-```
+```python
 >>> os.path.isabs('/big/fake/name')
 True
 >>> os.path.isabs('big/fake/name/without/a/leading/slash')
@@ -594,7 +559,7 @@ The copy() function comes from another module, shutil. This example copies the
 
 file oops.txt to the file ohno.txt:
 
-```
+```python
 >>> import shutil
 >>> shutil.copy('oops.txt', 'ohno.txt')
 ```
@@ -606,7 +571,7 @@ This function does exactly what it says. In the example here, it renames ohno.tx
 
 ohwell.txt:
 
-```
+```python
 >>> import os
 >>> os.rename('ohno.txt', 'ohwell.txt')
 ```
@@ -626,7 +591,7 @@ is a symbolic link.
 
 Here’s how to make a hard link to the existing file oops.txt from the new file yikes.txt:
 
-```
+```python
 >>> os.link('oops.txt', 'yikes.txt')
 >>> os.path.isfile('yikes.txt')
 True
@@ -637,7 +602,7 @@ To create a symbolic link to the existing file oops.txt from the new file jeeper
 
 the following:
 
-```
+```python
 >>> os.symlink('oops.txt', 'jeepers.txt')
 >>> os.path.islink('jeepers.txt')
 True
@@ -656,7 +621,7 @@ compressed octal (base 8) value that combines user, group, and other permissions
 
 For instance, to make oops.txt readable only by its owner, type the following:
 
-```
+```python
 >>> os.chmod('oops.txt', 0o400)
 ```
 If you don’t want to deal with cryptic octal values and would rather deal with (slightly
@@ -665,7 +630,7 @@ less) obscure cryptic symbols, you can import some constants from the stat modul
 
 and use a statement such as the following:
 
-```
+```python
 >>> import stat
 >>> os.chmod('oops.txt', stat.S_IRUSR)
 ```
@@ -675,7 +640,7 @@ This function is also Unix/Linux/Mac–specific. You can change the owner and/or
 
 group ownership of a file by specifying the numeric user ID (uid) and group ID (gid):
 
-```
+```python
 >>> uid = 5
 >>> gid = 22
 >>> os.chown('oops', uid, gid)
@@ -684,7 +649,7 @@ group ownership of a file by specifying the numeric user ID (uid) and group ID (
 
 In this snippet, we use the remove() function and say farewell to oops.txt:
 
-```
+```python
 >>> os.remove('oops.txt')
 >>> os.path.exists('oops.txt')
 False
@@ -705,7 +670,7 @@ This example shows how to create a directory called poems to store that precious
 
 verse:
 
-```
+```python
 >>> os.mkdir('poems')
 >>> os.path.exists('poems')
 True
@@ -720,7 +685,7 @@ Upon second thought,^2 you decide you don’t need that directory after all. Her
 
 to delete it:
 
-```
+```python
 >>> os.rmdir('poems')
 >>> os.path.exists('poems')
 False
@@ -729,18 +694,18 @@ False
 
 OK, take two; let’s make poems again, with some contents:
 
-```
+```python
 >>> os.mkdir('poems')
 ```
 Now get a list of its contents (none so far):
 
-```
+```python
 >>> os.listdir('poems')
 []
 ```
 Next, make a subdirectory:
 
-```
+```python
 >>> os.mkdir('poems/mcintyre')
 >>> os.listdir('poems')
 ['mcintyre']
@@ -749,7 +714,7 @@ Create a file in this subdirectory (don’t type all these lines unless you real
 
 just make sure you begin and end with matching quotes, either single or tripled):
 
-```
+```python
 >>> fout = open('poems/mcintyre/the_good_man', 'wt')
 >>> fout.write('''Cheerful and happy was his mood,
 ... He to the poor was kind and good,
@@ -767,12 +732,9 @@ just make sure you begin and end with matching quotes, either single or tripled)
 ```
 Finally, let’s see what we have. It had better be there:
 
-```
+```python
 >>> os.listdir('poems/mcintyre')
 ['the_good_man']
-```
-```
-Directory Operations | 271
 ```
 
 ### Change Current Directory with chdir()
@@ -781,7 +743,7 @@ With this function, you can go from one directory to another. Let’s leave the 
 
 directory and spend a little time in poems:
 
-```
+```python
 >>> import os
 >>> os.chdir('poems')
 >>> os.listdir('.')
@@ -800,26 +762,26 @@ than the more complete regular expression syntax. Here are those rules:
 
 Try getting all files or directories that begin with m:
 
-```
+```python
 >>> import glob
 >>> glob.glob('m*')
 ['mcintyre']
 ```
 How about any two-letter files or directories?
 
-```
+```python
 >>> glob.glob('??')
 []
 ```
 I’m thinking of an eight-letter word that begins with m and ends with e:
 
-```
+```python
 >>> glob.glob('m??????e')
 ['mcintyre']
 ```
 What about anything that begins with a k, l, or m, and ends with e?
 
-```
+```python
 >>> glob.glob('[klm]*e')
 ['mcintyre']
 ```
@@ -854,7 +816,7 @@ Windows, you can use backslash, but you know that backslash is a ubiquitous esca
 
 character in Python, so you have to double it everywhere, or use Python’s raw strings:
 
-```
+```python
 >>> win_file = 'eek \\ urk \\ snort.txt'
 >>> win_file2 = r'eek\urk\snort.txt'
 >>> win_file
@@ -874,7 +836,7 @@ This function expands a relative name to an absolute one. If your current direct
 
 is /usr/gaberlunzie and the file oops.txt is there, you can type the following:
 
-```
+```python
 >>> os.path.abspath('oops.txt')
 '/usr/gaberlunzie/oops.txt'
 ```
@@ -886,12 +848,9 @@ jeepers.txt. In circumstances such as this, you can get the name of oops.txt fro
 
 ers.txt by using the realpath() function, as shown here:
 
-```
+```python
 >>> os.path.realpath('jeepers.txt')
 '/usr/gaberlunzie/oops.txt'
-```
-```
-Pathnames | 273
 ```
 
 ### Build a Pathname with os.path.join()
@@ -902,20 +861,20 @@ combine them pairwise with the proper path separation character for your operati
 
 system:
 
-```
+```python
 >>> import os
 >>> win_file = os.path.join("eek", "urk")
 >>> win_file = os.path.join(win_file, "snort.txt")
 ```
 If I run this on a Mac or Linux box, I get this:
 
-```
+```python
 >>> win_file
 'eek/urk/snort.txt'
 ```
 Running on Windows would produce this:
 
-```
+```python
 >>> win_file
 'eek\\urk\\snort.txt'
 ```
@@ -935,7 +894,7 @@ treat them at a little higher level. Create a Path with the Path() class, and th
 
 your path together with bare slashes (not '/' characters):
 
-```
+```python
 >>> from pathlib import Path
 >>> file_path = Path('eek') / 'urk' / 'snort.txt'
 >>> file_path
@@ -947,7 +906,7 @@ This slash trick took advantage of Python’s “Magic Methods” on page 190. A
 
 tell you a bit about itself:
 
-```
+```python
 >>> file_path.name
 'snort.txt'
 >>> file_path.suffix
@@ -962,7 +921,7 @@ You can also see what would happen if you ran this program on another system or 
 you needed to generate foreign pathnames on your computer:
 
 
-```
+```python
 >>> from pathlib import PureWindowsPath
 >>> PureWindowsPath(file_path)
 PureWindowsPath('eek/urk/snort.txt')
@@ -975,32 +934,20 @@ eek\urk\snort.txt
 
 You’ve seen how to modify data in memory and how to get data in and out of files.
 
-What do you do if you have in-memory data, but want to call a function that expects
+What do you do if you have in-memory data, but want to call a function that expects a file (or the reverse)? You’d want to modify the data and pass those bytes or characters around, without reading and writing temporary files.
 
-a file (or the reverse)? You’d want to modify the data and pass those bytes or charac‐
+You can use `io.BytesIO` for binary data (bytes) and `io.StringIO` for text data (str).
 
-ters around, without reading and writing temporary files.
+Using either of these wraps data as a file-like object, suitable to use with all the file functions you’ve seen in this chapter.
 
-You can use io.BytesIO for binary data (bytes) and io.StringIO for text data (str).
+One use case for this is data format conversion. Let’s apply this to the PIL library(details coming in “PIL and Pillow” on page 454 ), which reads and writes image data.
 
-Using either of these wraps data as a file-like object, suitable to use with all the file
-
-functions you’ve seen in this chapter.
-
-One use case for this is data format conversion. Let’s apply this to the PIL library
-
-(details coming in “PIL and Pillow” on page 454 ), which reads and writes image data.
-
-The first argument to its Image object’s open() and save() methods is a filename or a
-
-file-like object. The code in Example 14-1 uses BytesIO to read and write in-memory
-
-data. It reads one or more image files from the command line, converts its image data
+The first argument to its Image object’s open() and save() methods is a filename or a file-like object. The code in Example 14-1 uses BytesIO to read and write in-memory data. It reads one or more image files from the command line, converts its image data
 
 to three different formats, and prints the length and first 10 bytes of these outputs.
 
 Example 14-1. convert_image.py
-
+![Alt text](/assets/images/%ED%99%94%EB%A9%B4%20%EC%BA%A1%EC%B2%98%202023-01-20%20000435.png)
 ```python
 from io import BytesIO
 from PIL import Image

@@ -1,24 +1,119 @@
 ---
 layout: default
-title: pathlib
+title: 파일 관련 모듈
 parent: Library
 grand_parent: Python
 ---
 
-### {{ page.title }}
+# {{ page.title }}
 {: .no_toc }
 
-###### Table of contents
+## Table of contents
 {: .no_toc .text-delta }
 
 1. TOC
 {:toc}
 
 ---
+
+## os모듈
+
+
+```python
+# 경로 존재 여부 확인
+
+import os
+for i in ['./ch14/poem.txt', './ch01', '.', '..']:
+    p1 = os.path.exists(i)                        
+    print(p1)
+
+# file형식, directory형식,절대경로형식 여부 확인
+f = './ch14/poem.txt'
+print(os.path.isfile(f))                           # file 여부 확인
+print(os.path.isdir('.'))                          # directory 여부 확인
+print(os.path.isabs('./ch14/poem.txt'))            # 절대경로 여부
+```
+
+```python
+# shutil 모둘을 이용한 copy, move
+import shutil
+shutil.copy('./ch14/poem.txt', './ch14/poem2.txt')  # 파일 복사
+shutil.move('./ch14/poem.txt', './ch14/poem2.txt')  # 이동(원본 삭제)
+```
+
+```python
+# 다른 os모듈 함수 - rename / 파일 삭제 / 읽기 전용으로 전환 
+os.rename('./ch14/poem2.txt', './ch14/poem.txt')    # rename
+os.remove('./ch14/poem2.txt')                       # 파일 삭제
+
+os.chmod('./ch14/poem.txt', 0o400)                  # 읽기 전용으로 전환
+import stat
+os.chmod('./ch14/poem.txt',stat.S_IRUSR)            # 위와 동일 기능
+```
+
+```python
+# 디렉터리 생성-삭제 / 현재디렉터리 변경
+result = os.path.exists('./ch14/new_dir')
+if result == False:
+    os.mkdir('./ch14/new_dir')                       # 디렉터리 생성
+os.rmdir('./ch14/new_dir')                           # (빈)디렉터리 삭제
+print(os.listdir('./ch14/new_dir'))                  # 디렉터리 내용을 list화
+os.chdir('./ch14/new_dir/mcintyre')                  # 현재 디렉터리 변경
+```
+
+
+glob()함수관련 문자
+- * : all (정규표현식*과 동일)
+- ? : 한문자에 일치
+- [abc] : a,b,c에 일치
+- [!abc] : not a,b,c
+
+
+```python
+# 파일, 경로 찾기
+import glob
+result = glob.glob('./ch14/*.txt')                     
+print(result)
+```
+
+```python
+# 경로 관리
+# 파이션의 경로 구분자(기본값): /
+# 루트 디렉터리 : 현재 디렉터리
+
+
+# 경로이름 작성 ( 만들기X )
+# /,\사용
+# os.path.join()함수 이용
+# pathlib 모듈 이용
+
+result = os.path.abspath('test.py')                     #상대경로 -> 절대 경로 변환
+print(result)
+# C:/Users/neo21/Downloads/introducing-python-master/introducing-python-master/test.py
+
+p = os.path.join('eek','urk','snort.txt')               # 경로 이름 작성
+print(p)     
+```
+
+```python
+# 경로 작성
+from pathlib import Path
+print(file_path)              # ch14 \ urk\ snort.txt
+print(type(file_path))        # <class 'pathlib.WindowsPath'>
+print(file_path.name, file_path.suffix, file_path.stem) # snort.txt .txt snort
+
+from pathlib import PureWindowsPath,Path
+file_path = Path('ch14') / 'urk' / 'snort.txt'
+result = PureWindowsPath(file_path)
+print(result)         # ch14\urk\snort.txt
+```
+
+## pathlib모듈
+
 os.path 와 Pathlib의 가장 큰 차이점은, 경로를 문자열로 다루냐, 객체로 다루냐 차이
 
-### 절대 경로 반환 : path(경로/파일)
 
+### 절대 경로 반환 : path(경로/파일)
 
 ```python 
 ### Get a path to the current Python file
@@ -26,11 +121,10 @@ import pathlib
 curr_file = pathlib.Path(__file__)
 print(curr_file)
 ``` 
+- Jupyter 노트북에서 __file__ 속성에 액세스할 수 없으므로 작동하지 않습니다. 
 
--	Jupyter 노트북에서 __file__ 속성에 액세스할 수 없으므로 작동하지 않습니다. 
 
-
-### 현재 작업 디렉토리의 경로 반환 : cwd()
+#### 현재 작업 디렉토리의 경로 반환 : cwd()
 
 ```python
 cwd = pathlib.Path.cwd()
@@ -39,14 +133,15 @@ print(cwd)
 - home() 
 사용자의 홈 디렉토리를 가리키는 새 경로를 반환합니다(os.path.expanduser('~')에 의해 반환됨).
 
-### 현재 작업 디렉터리의 상위 디렉터리 반환 : parent 속성
+
+#### 현재 작업 디렉터리의 상위 디렉터리 반환 : parent 속성
 
 ```python
 one_above = pathlib.Path.cwd().parent 
 print(one_above)
 ```
 
-### N 번째 상위 폴더 경로 반환 : parents[index]
+#### N 번째 상위 폴더 경로 반환 : parents[index]
 
 ```python
 ### 2번째 상위폴더 반환
@@ -149,3 +244,13 @@ print(tgt_path.suffix)
 파일을 바이트 모드로 열고 쓴 다음 파일을 닫습니다.
 - write_text(self, data, encoding=None, errors=None, newline=None)
 텍스트 모드에서 파일을 열고 쓴 다음 파일을 닫습니다.
+
+
+
+
+
+
+
+
+
+

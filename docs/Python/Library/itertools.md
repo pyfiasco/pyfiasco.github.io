@@ -25,10 +25,10 @@ it1 = itertools.chain([1, 2], ['a', 'b'])
 print(it1)
 for item in it1:
     print (item) # 1/2/a/b
-'''
+
 for item in itertools.cycle([1, 2]): # 무한 생성
     print (item)        
-'''
+
 
 it1 = itertools.accumulate([1, 2, 3, 4])
 print(it1)

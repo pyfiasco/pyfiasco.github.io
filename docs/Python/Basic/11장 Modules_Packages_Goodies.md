@@ -15,28 +15,6 @@ nav_order: 11
 1. TOC
 {:toc}
 
-- 11. Modules, Packages, and Goodies.
-   - Modules and the import Statement
-      - Import a Module
-      - Import a Module with Another Name
-      - Import Only What You Want from a Module
-   - Packages
-      - The Module Search Path
-      - Relative and Absolute Imports
-      - Namespace Packages
-      - Modules Versus Objects
-   - Goodies in the Python Standard Library
-      - Handle Missing Keys with setdefault() and defaultdict()
-      - Count Items with Counter()
-      - Order by Key with OrderedDict()
-      - Stack + Queue == deque
-      - Iterate over Code Structures with itertools
-      - Print Nicely with pprint()
-      - Get Random
-   - More Batteries: Get Other Python Code
-   - Coming Up
-   - Things to Do
-
 
 During your bottom-up climb, you’ve progressed from built-in data types to constructing ever-larger data and code structures. In this chapter, you finally learn how to write realistic whole programs in Python. You’ll write your own modules and learn how to use others from Python’s standard library and other sources.
 
@@ -160,7 +138,7 @@ We went from single lines of code, to multiline functions, to standalone program
 
 To allow Python applications to scale even more, you can organize modules into file and module hierarchies called packages. A package is just a subdirectory that contains .py files. And you can go more than one level deep, with directories inside those.
 
-We just wrote a module that chooses a fast-food place. Let’s add a similar module to dispense life advice. We’ll make one new main program called questions.py in our current directory. Now make a subdirectory named choices and put two modules in it —fast.py and advice.py. Each module has a function that returns a string.
+We just wrote a module that chooses a fast-food place. Let’s add a similar module to dispense life advice. We’ll make one new main program called questions.py in our current directory. Now make a subdirectory named choice and put two modules in it —fast.py and advice.py. Each module has a function that returns a string.
 
 
 
@@ -168,16 +146,16 @@ The main program (questions.py) has an extra import and line (Example 11-7).
 
 Example 11-7. questions.py
 ```python
-from sources import fast, advice
+from choice import fast, advice
 
 print ("Let's go to", fast.pick())
 print ("Should we take out?", advice.give())
 ```
-That from sources makes Python look for a directory named sources, starting under your current directory. Inside sources it looks for the files fast.py and advice.py.
+That from choice makes Python look for a directory named choice, starting under your current directory. Inside choice it looks for the files fast.py and advice.py.
 
-The first module (choices/fast.py) is the same code as before, just moved into the choices directory (Example 11-8).
+The first module (choice/fast.py) is the same code as before, just moved into the choice directory (Example 11-8).
 
-Example 11-8. choices/fast.py
+Example 11-8. choice/fast.py
 ```python
 from random import choice
 
@@ -188,9 +166,9 @@ defpick():
 """Return random fast food place"""
 return choice(places)
 ```
-The second module (choices/advice.py) is new, but it works a lot like its fast-food relative (Example 11-9).
+The second module (choice/advice.py) is new, but it works a lot like its fast-food relative (Example 11-9).
 
-Example 11-9. choices/advice.py
+Example 11-9. choice/advice.py
 ```python
 from random import choice
 
@@ -200,9 +178,11 @@ def give():
 """Return random advice"""
 return choice(answers)
 ```
-```
-If your version of Python is earlier than 3.3, you’ll need one more thing in the sources subdirectory to make it a Python package: a file named __init__.py. This can be an empty file, but pre-3.3 Python needs it to treat the directory containing it as a package. (This is another common Python interview question.)
-```
+
+{: .note}
+> If your version of Python is earlier than 3.3, you’ll need `__init__.py` in the sources subdirectory to make it a Python package. This can be an empty file, but pre-3.3 Python needs it to treat the directory containing it as a package.
+
+
 Run the main questions.py program (from your current directory, not in sources) to see what happens:
 
 
@@ -219,62 +199,81 @@ Should we take out? Reply hazy
 ```
 ### The Module Search Path
 
-I just said that Python looks under your current directory for the subdirectory choices and its modules. Actually, it looks in other places, as well, and you can control this.
+<!-- I just said that Python looks under your current directory for the subdirectory choices and its modules. Actually, it looks in other places, as well, and you can control this.
 
 Earlier, we imported the function choice() from the standard library’s random module. That wasn’t in your current directory, so Python needed to look elsewhere also.
 
 To see all the places that your Python interpreter looks, import the standard sys module and use its path list. This is a list of directory names and ZIP archive files that Python searches in order to find modules to import.
 
-You can access and modify this list. Here’s the value of sys.path for Python 3.7 on my Mac:
+You can access and modify this list. Here’s the value of sys.path for Python 3.7 on my Mac: -->
+
+- 모듈 탐색 순서
+
+1. 현재디렉터리
+2. sys.path에서 확인된 순서
 
 ```python
->>> import sys
->>> for place in sys.path:
-... print (place)
+>>> for i in sys.path:
+...     print(i)
 ...
+
+C:\Users\neo21\AppData\Local\Programs\Python\Python311\python311.zip
+C:\Users\neo21\AppData\Local\Programs\Python\Python311\Lib
+C:\Users\neo21\AppData\Local\Programs\Python\Python311\DLLs
+C:\Users\neo21\AppData\Local\Programs\Python\Python311
+C:\Users\neo21\AppData\Local\Programs\Python\Python311\Lib\site-packages
 ```
-```python
-/Library/Frameworks/Python.framework/Versions/3.7/lib/python37.zip
-/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7
-/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/lib-dynload
-```
-That initial blank output line is the empty string '', which stands for the current directory. If '' is first in sys.path, Python looks in the current directory first when you try to import something: import fast looks for fast.py. This is Python’s usual setup. Also, when we made that subdirectory called sources and put Python files in it, they could be imported with import sources or from sources import fast.
+<!-- That initial blank output line is the empty string '', which stands for the current directory. If '' is first in sys.path, Python looks in the current directory first when you try to import something: import fast looks for fast.py. This is Python’s usual setup. Also, when we made that subdirectory called choice and put Python files in it, they could be imported with import choice or from choice import fast.
 
 The first match will be used. This means that if you define a module named random and it’s in the search path before the standard library, you won’t be able to access the standard library’s random now.
 
-You can modify the search path within your code. Let’s say you want Python to look in the /my/modules directory before any other:
+You can modify the search path within your code. Let’s say you want Python to look in the /my/modules directory before any other: -->
+
+- 모둘 탐색 경로 추가
 
 ```python
 >>> import sys
 >>> sys.path.insert(0, "/my/modules")
 ```
-
+- 개인 모듈 일반 저장 위치
+   : Python311\Lib\site-packages
 
 ### Relative and Absolute Imports
 
-In our examples so far, we imported our own modules from:
+<!-- In our examples so far, we imported our own modules from:
 
 - The current directory
-- The subdirectory choices
+- The subdirectory choice
 - The Python standard library
 
 This works well until you have a local module with the same name as a standard one.
 
 Which do you want?
 
-Python supports absolute or relative imports. The examples that you’ve seen so far are absolute imports. If you typed import rougarou, for each directory in the search path, Python will look for a file named rougarou.py (a module) or a directory named `rougarou` (a package).
+Python supports absolute or relative imports. The examples that you’ve seen so far are absolute imports. If you typed import rougarou, for each directory in the search path, Python will look for a file named rougarou.py (a module) or a directory named `rougarou` (a package). -->
 
-- If rougarou.py is in the same directory as your calling problem, you can import it relative to your location with `from. import rougarou`.
+- 절대경로
+
+import rougarou
+탐색경로의 각 디렉터리에 대해 파이션은 rougarou.py(모듈), rougarou디렉터리(패키지)를 찾는다.
+
+- 상대경로   
+   rougarou모듈 import하기   
+   - 메인 프로그램과 동일 디렉터리에 있는 경우 : `from . import rougarou`
+   - 상위 디렉터리에 있는 경우 : `from .. import rougarou`
+   - 상위 디렉터리의 creatures 디렉터리에 있는 경우 : `from ..creatures import rougarou`
+
+<!-- - If rougarou.py is in the same directory as your calling problem, you can import it relative to your location with `from. import rougarou`.
 - If it’s in the directory above you: `from .. import rougarou`.
 - If it’s under a sibling directory called creatures: `from ..creatures import rougarou`.
 
-The. and .. notation was borrowed from Unix’s shorthand for `current directory` and `parent directory`.
+The. and .. notation was borrowed from Unix’s shorthand for `current directory` and `parent directory`. -->
 
 For a good discussion of Python import problems that you may run into, see [Traps for the Unwary in Python’s Import System](https://python-notes.curiousefficiency.org/en/latest/python_concepts/import_traps.html).
 
 ### Namespace Packages
 
-You’ve seen that you can package Python modules as:
+<!-- You’ve seen that you can package Python modules as:
 
 - A single module (.py file)
 - A package (directory containing modules, and possibly other packages)
@@ -283,11 +282,13 @@ You can also split a package across directories with namespace packages. Say you
 
 One option is to add location subpackages under `critters` and move the `existing .py`
 
-module files under them, but this would break things for other modules that import them. Instead, we can go up and do the following:
+module files under them, but this would break things for other modules that import them. Instead, we can go up and do the following: -->
 
-- Make `new location` directories `above critters`
-- Make `cousin critters` directories `under these new parents`
-- Move `existing modules` to their `respective directories`.
+-  디렉터리 재분할 방법
+
+   - Make `new location` directories `above critters`
+   - Make `cousin critters` directories `under these new parents`
+   - Move `existing modules` to their `respective directories`.
 
 This needs some illustration. Say we started with this file layout:
 
@@ -321,7 +322,7 @@ from critters import wendigo, rougarou
 
 ### Modules Versus Objects
 
-When should you put your code into a module, and when into an object?
+<!-- When should you put your code into a module, and when into an object?
 
 They look similar in many ways. An object or module called thing with an internal data value called stuff would let you access the value as thing.stuff. stuff may have been defined when the module or class was created, or it may have been assigned later.
 
@@ -344,7 +345,9 @@ Did you just ruin calculations for everyone on this computer? Yes! No, I’m kid
 
 This did not affect the Python math module. You only changed the value of pi for the copy of the math module code imported by your calling program, and all evidence of your crimes will disappear when it finishes.
 
-There’s only one copy of any module imported by your program, even if you import it more than once. You can use it to save global things, of interest to any code that imports it. This is similar to a class, which also has only one copy, although you can have many objects created from it.
+There’s only one copy of any module imported by your program, even if you import it more than once. You can use it to save global things, of interest to any code that imports it. This is similar to a class, which also has only one copy, although you can have many objects created from it. -->
+
+모듈을 두번이상 import하더라도 하나의 모듈 사본만 존재한다. 그러하므로 전역 변수 유지 가능
 
 ## Goodies in the Python Standard Library
 
@@ -607,9 +610,10 @@ True
 >>> another_palindrome('halibut')
 False
 ```
+
 ### Iterate over Code Structures with itertools
 
-itertools contains special-purpose iterator functions. Each returns one item at a time when called within a for ... in loop, and remembers its state between calls. chain() runs through its arguments as though they were a single iterable:
+[itertools](https://docs.python.org/3/library/itertools.html) contains special-purpose iterator functions. Each returns one item at a time when called within a for ... in loop, and remembers its state between calls. chain() runs through its arguments as though they were a single iterable:
 
 ```python
 >>> import itertools

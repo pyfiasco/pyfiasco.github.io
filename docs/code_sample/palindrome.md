@@ -80,6 +80,21 @@ with open('words.txt','r') as f:
             print(test)
 ```
 
+# 방법6 - deque이용
+
+```python
+from collections import deque
+def palindrome(word):
+    dq = deque(word)
+    while len(dq) > 1:
+        if dq.popleft() != dq.pop():
+            return False
+    return True
+
+result = palindrome('a'), palindrome('racecar'),palindrome(''),palindrome('radar'),palindrome('halibut')
+print(result)  # (True, True, True, True, False)
+```
+
 # N-gram
 
 ## 방법 1

@@ -15,6 +15,71 @@ grand_parent: Python
 {:toc}
 
 ---
+![Alt text](/assets/images/%ED%99%94%EB%A9%B4%20%EC%BA%A1%EC%B2%98%202023-01-20%20000435.png)
+
+```python
+from PIL import Image
+from io import BytesIO
+
+
+def source_to_pil(source:str)->Image:
+    """image source -> pil_img"""
+    pil = Image.open(source)
+    print(pil,pil.format)
+    return pil  
+    
+def source_to_bytesio(source:str)->BytesIO:
+    """image source -> BytesIO"""
+    f = open(source,'rb')
+    b_data = f.read()
+    io_data = BytesIO(b_data)
+    print(io_data)
+    return io_data  
+          
+def bytesio_to_pil(bytesio:BytesIO)->Image:
+    """BytesIO -> pil image"""
+    pil = Image.open(bytesio)
+    print(pil,pil.format)
+    return pil
+    
+def pil_to_io(p_img:Image,format:str=None)->BytesIO:
+    """pil image -> BytesIO(메모리)"""
+    io_data = BytesIO()
+    if not format:
+        format = p_img.format
+    p_img.save(io_data,format)
+    print(io_data)
+    return io_data 
+    
+def bytesio_to_bytes_data(bytesio:BytesIO)->bytes:
+    """BytesIO -> bytes data"""
+    b_data = bytesio.getvalue()
+    print(b_data)
+    return b_data  
+
+def bytes_data_to_img_file(b_data:bytes,file_name:str)->None:
+    """byte data -> image file"""
+    f = open(file_name,'wb')
+    f.write(b_data) 
+    
+
+def p_img_to_img(p_img:Image, file_name:str,format:str)->None:
+    """pil image -> imgage file"""
+    p_img.save(file_name,format)    
+
+if __name__ =='__main__':
+        
+    p_img = source_to_pil('아이유.png')
+
+    io = source_to_bytesio('아이유.png')
+    p_img2 = bytesio_to_pil(io)
+
+    io2 = pil_to_io(p_img2,format='gif')
+    b_data = bytesio_to_bytes_data(io2)
+    bytes_data_to_img_file(b_data,'아이유_복사.gif')
+
+    p_img_to_img(p_img2,'아이유_복사본.gif' ,'gif')
+```
 
 이미지 분석 및 처리를 쉽게 할 수 있는 라이브러리(Python Imaging Library : PIL)가 있습니다. 바로 pillow모듈입니다. 다양한 이미지 파일 형식을 지원하며, 강력한 이미지 처리와 그래픽 기능을 제공하는 이미지프로세싱 라이브러리의 한 종류입니다.
  
