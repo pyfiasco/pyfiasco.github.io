@@ -110,6 +110,8 @@ print(result)         # ch14\urk\snort.txt
 
 ## pathlib모듈
 
+[참조](https://m.blog.naver.com/hankrah/221843966812)
+
 os.path 와 Pathlib의 가장 큰 차이점은, 경로를 문자열로 다루냐, 객체로 다루냐 차이
 
 

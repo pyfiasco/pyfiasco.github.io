@@ -15,6 +15,8 @@ grand_parent: Python
 {:toc}
 
 ---
+[in the standard library](https://docs.python.org/3/library/concurrency.html).
+
 ## Thread
 
 <div class="code-example" markdown="1">
